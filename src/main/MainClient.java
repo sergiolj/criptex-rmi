@@ -1,9 +1,9 @@
-package client;
+package main;
 
 
 import shared.Color;
 
-public class Main {
+public class MainClient {
     public static void main(String[] args) {
         System.out.println(Color.VERDE + "Verde" + Color.AMARELO + "Amarela");
     }

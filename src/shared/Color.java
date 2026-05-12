@@ -12,3 +12,6 @@ public class Color {
     public static final String BG_AMARELO = "\u001B[43m";
     public static final String BG_CINZA = "\u001B[47m";
 }
+
+//Exemplo de uso
+//System.out.println(Color.VERDE + "Verde" + Color.AMARELO + "Amarela");
