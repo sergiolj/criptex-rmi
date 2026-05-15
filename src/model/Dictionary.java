@@ -1,7 +1,13 @@
 package model;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Banco de dados de palavras do jogo Adivinha a Palavra
@@ -15,18 +21,46 @@ import java.util.List;
  */
 public class Dictionary {
     private static Dictionary instance;
+    private final String dictionaryPath = "resources/palavras.txt";
     private final List<String> words = new ArrayList<>();
+
+
+    /** Remove todos os acentos e cedilha de uma string, convertendo em caracteres básicos de A-Z. */
+    private String removeAccentFromWord(String word) {
+        String normalizedWord = Normalizer.normalize(word, Normalizer.Form.NFC);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(normalizedWord).replaceAll("");
+    }
+
+    /**
+     * Cria o dicionário de palavras do jogo a partir de uma lista de palavras em txt, o que pode facilitar a
+     * substituição do dicionário por outro ou por outra linguagem. Possibilitando ao usuário escolher o idioma que
+     * deseja jogar ou até temática de palavras, por exemplo.
+     */
+    private void readRawDictionary(){
+        try{
+            BufferedReader br = new BufferedReader(new FileReader(dictionaryPath));
+            String currentLine;
+            while ((currentLine = br.readLine()) != null) {
+                currentLine = currentLine.trim();
+                if (currentLine.length() == 5) {
+                    String wordModified = removeAccentFromWord(currentLine.toUpperCase());
+                    if(wordModified.matches("^[A-Z]+$")){
+                        words.add(wordModified);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Erro ao acessar arquivo base do dicionário em " + dictionaryPath);
+        }
+    }
 
     /** Todas as palavras devem ter cinco letras para o estilo do jogo. */
     private Dictionary() {
-        words.add("VOLEI");
-        words.add("ATRIO");
-        words.add("BROTO");
-        words.add("SAGAZ");
-        words.add("AMAGO");
-    }
+        readRawDictionary();
+        }
 
-    /** Retorna a instância única do dicionário simulando um BD centralizado.
+        /** Retorna a instância única do dicionário simulando um BD centralizado.
      * Utiliza synchronized para evitar problemas de concorrência na criação da instância em ambiente
      * com múltiplos usuários simultâneos
      */
@@ -54,5 +88,9 @@ public class Dictionary {
     /** Retorna a quantidade total de palavras no dicionário. */
     public int size() {
         return words.size();
+    }
+
+    public List<String> getDictionaryList() {
+        return new ArrayList<>(this.words);
     }
 }

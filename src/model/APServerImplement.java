@@ -5,6 +5,7 @@ import shared.ServerInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,6 +36,8 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
                 client.getId());
 
         String secretWord = dictionary.getWord(client.getIndex());
+        System.out.println("Secret word: " + secretWord);
+
         String guessWord = word.toUpperCase();
 
         /**
@@ -71,6 +74,7 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
                     }
                 }
             }
+        System.out.println("Result from player [UUID: " + client.getId() + "] guess: " + Arrays.toString(status));
         return status;
         }
 

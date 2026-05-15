@@ -85,11 +85,11 @@ public class Client implements Serializable {
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < 5; i++) {
             if(status[i] == 0) {
-                sb.append(Color.CINZA).append(guess.charAt(i));
+                sb.append(Color.CINZA).append(guess.charAt(i)).append(Color.RESET);
             }else if(status[i] == 1) {
-                sb.append(Color.AMARELO).append(guess.charAt(i));
+                sb.append(Color.AMARELO).append(guess.charAt(i)).append(Color.RESET);
             }else if(status[i] == 2) {
-                sb.append(Color.VERDE).append(guess.charAt(i));
+                sb.append(Color.VERDE).append(guess.charAt(i)).append(Color.RESET);
             }
         }
         sb.append(Color.RESET);
