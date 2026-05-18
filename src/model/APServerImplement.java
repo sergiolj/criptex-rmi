@@ -34,10 +34,10 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
 
     @Override
     public int [] verifyGuess(Client client, String word) throws RemoteException {
-        countCharOk = 0;
-        Arrays.fill(charVerified, '\u0000');
+        String secretWord = dictionary.getWord(client.getIndex());
+        String guessWord = word.toUpperCase();
 
-        System.out.printf("Analysing attempt from player: %s [UUID: %s)%n",
+        System.out.printf("Secret Word <" + secretWord + "> - Analysing attempt from player: %s [UUID: %s)%n",
                 client.getName(),
                 client.getId());
 
@@ -48,10 +48,7 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
 //                //Sai do loop e impede novas tentativas
 //            }
 
-        String secretWord = dictionary.getWord(client.getIndex());
-        System.out.println("Secret word: " + secretWord);
 
-        String guessWord = word.toUpperCase();
 
         /**
          * Array que irá receber os valores verificados para as letras da palavra do palpite do jogador:
@@ -61,6 +58,8 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
          */
         int[] status = new int[5];
 
+        boolean [] secretPositionsUsed = new boolean [5];
+        boolean [] guessPositionsUsed = new boolean [5];
         /**
          * Algoritmo que busca se a letra na posição i da palavra do palpite do jogador é igual a letra na mesma posição
          * da palavra secreta. Se sim o array de verificação recebe o valor 2 que indica letra certa na posição certa.
@@ -68,8 +67,8 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
         for (int i = 0; i < 5; i++) {
             if (guessWord.charAt(i) == secretWord.charAt(i)) {
                 status[i] = 2;
-                charVerified[countCharOk++] = guessWord.charAt(i);
-                System.out.println(charVerified);
+                secretPositionsUsed[i] = true;
+                guessPositionsUsed[i] = true;
             }
         }
 
@@ -78,16 +77,17 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
          * verificada em outras posições da palavra secreta.
          */
         for (int i = 0; i < 5; i++) {
-            if (status[i] == 0 && !letterVerified(guessWord.charAt(i))) {
-                for (int j = 0; j < 5; j++) {
-                    if (guessWord.charAt(i) == secretWord.charAt(j)) {
-                        status[i] = 1;
-                        break;
-                    }
+            if (guessPositionsUsed[i]) continue;
+
+            for (int j = 0; j < 5; j++) {
+                if(!secretPositionsUsed[j] && guessWord.charAt(i) == secretWord.charAt(j)) {
+                    status[i] = 1;
+                    secretPositionsUsed[j] = true;
+                    break;
                 }
             }
         }
-        System.out.println("Result from player [UUID: " + client.getId() + "] guess: " + Arrays.toString(status));
+        System.out.println("Result from player [UUID: " + client.getId() + "] STATUS: " + Arrays.toString(status));
         return status;
     }
 
