@@ -20,19 +20,23 @@ public class MainClient {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         boolean isSolved = false;
+        Client client;
+        String name;
 
         try{
-            Client client = new Client();
-            System.out.println("Digite o nome do jogador ou <ENTER>:");
-            String nome = sc.nextLine();
-            if(!nome.equalsIgnoreCase("")){
-                client.setName(nome);
+            System.out.print("Digite o nome do jogador ou <ENTER>:");
+            name = sc.nextLine();
+
+            if(name.isEmpty()){
+                client = new Client();
+            }else{
+                client = new Client(name);
             }
 
             while(!isSolved){
                 System.out.print("Digite seu palpite: ");
                 String guess = sc.nextLine();
-                client.verifyGuess(client, guess);
+                client.verifyGuess(guess);
             }
         } catch (RemoteException e) {
             throw new RuntimeException(e);

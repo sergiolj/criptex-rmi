@@ -19,6 +19,9 @@ public class Config {
     /** Porta padrão usada para o registro RMI. */
     public static final Integer SERVER_PORT =1099;
 
-    /** Endereço IP do servidor que será usado na configuração do Client.*/
-    public static final String IP_ADDRESS = "10.10.82.78";
+    /** Endereço IP do servidor que será usado na configuração do Client.
+     * Para fins de teste é possível usar o localhost, pois tanto servidor quanto cliente estarão
+     * na mesma máquina.
+     */
+    public static final String IP_ADDRESS = "127.0.0.1";
 }

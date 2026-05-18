@@ -29,7 +29,7 @@ public class Client implements Serializable {
 
     /** Parâmetro que cria um identificador único para o jogador (UUID Universally Unique Identifier) */
     private final UUID id;
-    private String name = "Jogador";
+    private String name = "Anonymous";
 
      public Client() throws RemoteException {
         super();
@@ -37,13 +37,31 @@ public class Client implements Serializable {
             this.id = UUID.randomUUID();
             this.registry = LocateRegistry.getRegistry(Config.IP_ADDRESS, Config.SERVER_PORT);
             this.proxy = (ServerInterface) this.registry.lookup(Config.SERVER_NAME);
+            this.proxy.registerUser(this);
         } catch (NotBoundException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void setName(String name){
-         this.name = name;
+    public Client(String name) throws RemoteException {
+        super();
+        try {
+            this.id = UUID.randomUUID();
+            this.name = name;
+            this.registry = LocateRegistry.getRegistry(Config.IP_ADDRESS, Config.SERVER_PORT);
+            this.proxy = (ServerInterface) this.registry.lookup(Config.SERVER_NAME);
+            this.proxy.registerUser(this);
+        } catch (NotBoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void increaseAttempt() {
+         this.attempts++;
+    }
+
+    public int getAttempts() {
+         return this.attempts;
     }
 
     public int getIndex() {
@@ -62,7 +80,7 @@ public class Client implements Serializable {
          return id;
     }
 
-    public int[] verifyGuess(Client client, String guess) throws RemoteException {
+    public void verifyGuess(String guess) throws RemoteException {
          Word word = new Word();
          if(word.validate(guess)){
              try {
@@ -71,28 +89,26 @@ public class Client implements Serializable {
                  status = this.proxy.verifyGuess(this, guess);
                  formatResponse(status, guess.toUpperCase());
                  attempts++;
-                 return status;
              } catch (RemoteException e) {
                  throw new RuntimeException(e);
              }
          }else{
              System.out.println("Palpite inválido, palavra não reconhecida ou com menos de 5 caracteres.");
          }
-         return null;
     }
 
     public void formatResponse(int[] status, String guess) {
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < 5; i++) {
             if(status[i] == 0) {
-                sb.append(Color.CINZA).append(guess.charAt(i)).append(Color.RESET);
+                sb.append(Color.BG_CINZA).append(guess.charAt(i));
             }else if(status[i] == 1) {
-                sb.append(Color.AMARELO).append(guess.charAt(i)).append(Color.RESET);
+                sb.append(Color.BG_AMARELO).append(guess.charAt(i));
             }else if(status[i] == 2) {
-                sb.append(Color.VERDE).append(guess.charAt(i)).append(Color.RESET);
+                sb.append(Color.BG_VERDE).append(guess.charAt(i));
             }
         }
         sb.append(Color.RESET);
-        System.out.println(sb.toString());;
+        System.out.println("< " + sb.toString() + " >");;
     }
 }
