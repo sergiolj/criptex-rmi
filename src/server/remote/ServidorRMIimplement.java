@@ -1,31 +1,24 @@
 package server.remote;
 
-import client.GameClient;
-import server.service.DictionaryService;
+import server.service.ServicoJogo;
 import shared.dto.PalpiteRequestDto;
+import shared.dto.ResultadoPalpiteDto;
 import shared.remote.ServidorInterface;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class ServidorRMIimplement extends UnicastRemoteObject implements ServidorInterface {
-    private final List<GameClient> gameClients = new ArrayList<>();
-    DictionaryService dict = new DictionaryService();
+    private final ServicoJogo servicoJogo =  new ServicoJogo();
 
     public ServidorRMIimplement() throws RemoteException {
     }
 
     @Override
-    public void registerUser(GameClient gameClient) throws RemoteException {
-        gameClients.add(gameClient);
+    public ResultadoPalpiteDto validarPalpite(PalpiteRequestDto dto)
+        throws RemoteException {
+        return servicoJogo.processarPalpite(dto);
+    }
     }
 
-    @Override
-    public void verifyGuess(GameClient gameClient, PalpiteRequestDto word) throws RemoteException {
-        String secretWord = this.dict.getWord(gameClient.getIndex());
-
-
-    }
-}
