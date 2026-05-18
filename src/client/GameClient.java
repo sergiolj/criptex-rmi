@@ -1,8 +1,8 @@
-package model;
+package client;
 
-import dto.WordDto;
-import shared.Config;
-import shared.ServerInterface;
+import shared.dto.PalpiteRequestDto;
+import shared.config.Configuracao;
+import shared.remote.ServidorInterface;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -11,18 +11,18 @@ import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Client {
+public class GameClient {
     private final Registry registry;
-    private final ServerInterface proxy;
+    private final ServidorInterface proxy;
     private int index = 0;
 
     private List<Word> guesesList = new ArrayList<>();
 
-     public Client() throws RemoteException {
+     public GameClient() throws RemoteException {
         super();
         try {
-            this.registry = LocateRegistry.getRegistry(Config.IP_ADDRESS, Config.SERVER_PORT);
-            this.proxy = (ServerInterface) this.registry.lookup(Config.SERVER_NAME);
+            this.registry = LocateRegistry.getRegistry(Configuracao.IP_ADDRESS, Configuracao.SERVER_PORT);
+            this.proxy = (ServidorInterface) this.registry.lookup(Configuracao.SERVER_NAME);
         } catch (NotBoundException e) {
             throw new RuntimeException(e);
         }
@@ -32,7 +32,7 @@ public class Client {
         return index;
     }
 
-    public void verifyGuess(Client client, WordDto word) throws RemoteException{
+    public void verifyGuess(GameClient gameClient, PalpiteRequestDto word) throws RemoteException{
         try{
             this.proxy.verifyGuess(this, word);
             //Se a palavra for a correta o index deve ser atualizado.

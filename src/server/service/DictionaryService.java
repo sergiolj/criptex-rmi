@@ -1,13 +1,13 @@
-package model;
+package server.service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Dictionary {
+public class DictionaryService {
     private List<String> words = new ArrayList<>();
     private int index = 0;
 
-    public Dictionary() {
+    public DictionaryService() {
         words.add("volei");
         words.add("atrio");
         words.add("broto");
