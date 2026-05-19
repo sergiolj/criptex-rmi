@@ -1,7 +1,6 @@
-package model;
+package server.service;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.Normalizer;
@@ -92,5 +91,9 @@ public class Dictionary {
 
     public List<String> getDictionaryList() {
         return new ArrayList<>(this.words);
+    }
+
+    public int getIndexOfWorld(){
+        return 0;
     }
 }

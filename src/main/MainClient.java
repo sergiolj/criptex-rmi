@@ -1,9 +1,7 @@
 package main;
 
 
-import model.Client;
-import model.Word;
-import shared.Color;
+import client.Client;
 
 import java.rmi.RemoteException;
 import java.util.Scanner;
@@ -19,7 +17,7 @@ import java.util.Scanner;
 public class MainClient {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        boolean isSolved = false;
+        boolean wordMatch = false;
         Client client;
         String name;
 
@@ -33,17 +31,14 @@ public class MainClient {
                 client = new Client(name);
             }
 
-            while(!isSolved){
+            while(!wordMatch){
                 System.out.print("Digite seu palpite: ");
                 String guess = sc.nextLine();
-                client.verifyGuess(guess);
+                wordMatch = client.verifyGuess(guess);
             }
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
-
-
-
-
-    }
+        System.out.println("Parabéns! Você descobriu a palavra da rodada.");
+   }
 }

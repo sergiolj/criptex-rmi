@@ -1,6 +1,10 @@
-package model;
+package server;
 
-import shared.ServerInterface;
+import client.Client;
+import server.service.Dictionary;
+import shared.dto.GuessRequestDTO;
+import shared.remote.ServerInterface;
+import shared.dto.GuessResponseDTO;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -27,19 +31,18 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
 
     @Override
     public void registerUser(Client client) throws RemoteException {
-        System.out.println("Registering online player: " + client.getName());
+        System.out.println("Registering online player: " + client.getName() + " UUID[" + client.getUuid() + "]");
         clients.add(client);
     }
 
 
     @Override
-    public int [] verifyGuess(Client client, String word) throws RemoteException {
-        String secretWord = dictionary.getWord(client.getIndex());
-        String guessWord = word.toUpperCase();
+    public GuessResponseDTO verifyGuess(GuessRequestDTO guessRequestDTO) throws RemoteException {
+        String secretWord = dictionary.getWord(dictionary.getIndexOfWorld());
+        String guessWord = guessRequestDTO.getGuess().toUpperCase();
 
-        System.out.printf("Secret Word <" + secretWord + "> - Analysing attempt from player: %s [UUID: %s)%n",
-                client.getName(),
-                client.getId());
+        System.out.printf("Secret Word <" + secretWord + "> - Analysing attempt from player [UUID: %s)%n",
+                guessRequestDTO.getUuid());
 
 //            client = clients.get(clients.indexOf(client));
 //            client.increaseAttempt();
@@ -47,7 +50,6 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
 //                System.out.println("Você não conseguiu descobrir a palavra dessa vez. :_(" );
 //                //Sai do loop e impede novas tentativas
 //            }
-
 
 
         /**
@@ -87,8 +89,11 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
                 }
             }
         }
-        System.out.println("Result from player [UUID: " + client.getId() + "] STATUS: " + Arrays.toString(status));
-        return status;
+        System.out.println("Result from player [UUID: " + guessRequestDTO.getUuid() + "] STATUS: " + Arrays.toString(status));
+
+        boolean wordMatch;
+        wordMatch = Arrays.stream(status).allMatch(v -> v == 2);
+        return new GuessResponseDTO(status, guessWord, wordMatch);
     }
 
 

@@ -1,8 +1,11 @@
-package model;
+package client;
 
-import shared.Color;
-import shared.Config;
-import shared.ServerInterface;
+import server.service.Word;
+import shared.status.Color;
+import shared.config.Config;
+import shared.dto.GuessRequestDTO;
+import shared.remote.ServerInterface;
+import shared.dto.GuessResponseDTO;
 
 import java.io.Serializable;
 import java.rmi.NotBoundException;
@@ -25,16 +28,16 @@ public class Client implements Serializable {
     private int index = 0;
 
     private int score = 0;
-    private int attempts = 0;
+    private int attempt = 0;
 
     /** Parâmetro que cria um identificador único para o jogador (UUID Universally Unique Identifier) */
-    private final UUID id;
+    private final UUID uuid;
     private String name = "Anonymous";
 
      public Client() throws RemoteException {
         super();
         try {
-            this.id = UUID.randomUUID();
+            this.uuid = UUID.randomUUID();
             this.registry = LocateRegistry.getRegistry(Config.IP_ADDRESS, Config.SERVER_PORT);
             this.proxy = (ServerInterface) this.registry.lookup(Config.SERVER_NAME);
             this.proxy.registerUser(this);
@@ -46,7 +49,7 @@ public class Client implements Serializable {
     public Client(String name) throws RemoteException {
         super();
         try {
-            this.id = UUID.randomUUID();
+            this.uuid = UUID.randomUUID();
             this.name = name;
             this.registry = LocateRegistry.getRegistry(Config.IP_ADDRESS, Config.SERVER_PORT);
             this.proxy = (ServerInterface) this.registry.lookup(Config.SERVER_NAME);
@@ -57,11 +60,11 @@ public class Client implements Serializable {
     }
 
     public void increaseAttempt() {
-         this.attempts++;
+         this.attempt++;
     }
 
     public int getAttempts() {
-         return this.attempts;
+         return this.attempt;
     }
 
     public int getIndex() {
@@ -76,39 +79,54 @@ public class Client implements Serializable {
          return name;
     }
 
-    public UUID getId() {
-         return id;
+    public UUID getUuid() {
+         return uuid;
     }
 
-    public void verifyGuess(String guess) throws RemoteException {
-         Word word = new Word();
+    /**
+     *
+     * @param guess
+     * @throws RemoteException
+     */
+    public boolean verifyGuess(String guess) throws RemoteException {
+        Word word = new Word();
+        GuessRequestDTO request;
+        GuessResponseDTO response = new GuessResponseDTO();
+
          if(word.validate(guess)){
              try {
-                 int[] status;
                  this.proxy.requestIndex(index);
-                 status = this.proxy.verifyGuess(this, guess);
-                 formatResponse(status, guess.toUpperCase());
-                 attempts++;
+                 request = new GuessRequestDTO(this.uuid, guess);
+                 response = this.proxy.verifyGuess(request);
+
+                 formatResponse(response);
+                 attempt++;
              } catch (RemoteException e) {
                  throw new RuntimeException(e);
              }
          }else{
              System.out.println("Palpite inválido, palavra não reconhecida ou com menos de 5 caracteres.");
          }
+         return response.isWordMatch();
     }
 
-    public void formatResponse(int[] status, String guess) {
+    public void formatResponse(GuessResponseDTO response) {
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < 5; i++) {
-            if(status[i] == 0) {
-                sb.append(Color.BG_CINZA).append(guess.charAt(i));
-            }else if(status[i] == 1) {
-                sb.append(Color.BG_AMARELO).append(guess.charAt(i));
-            }else if(status[i] == 2) {
-                sb.append(Color.BG_VERDE).append(guess.charAt(i));
+            if(response.getStatus()[i] == 0) {
+                sb.append(Color.BG_CINZA).append(response.getGuess().charAt(i));
+            }else if(response.getStatus()[i] == 1) {
+                sb.append(Color.BG_AMARELO).append(response.getGuess().charAt(i));
+            }else if(response.getStatus()[i] == 2) {
+                sb.append(Color.BG_VERDE).append(response.getGuess().charAt(i));
             }
         }
         sb.append(Color.RESET);
-        System.out.println("< " + sb.toString() + " >");;
+        System.out.println("< " + sb.toString() + " >");
+        System.out.println("-------------------------------------");
+        System.out.printf("Tentativa: %d/5 | Tempo decorrido: %s%n",
+                response.getCurrentAttempt(),
+                response.getEnlapsedTime());
+        System.out.println("-------------------------------------");
     }
 }

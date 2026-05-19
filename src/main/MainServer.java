@@ -1,13 +1,13 @@
 package main;
 
-import model.APServerImplement;
-import shared.Config;
+import server.APServerImplement;
+import shared.config.Config;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 /**
- * Inicializa o serviço do servidor RMI com base nas informações de configuração compartilhadas no pacote shared.
+ * Inicializa o serviço do servidor RMI com base nas informações de configuração compartilhadas no pacote shared Config.
  *
  * @author Bruna Brito Muniz Filgueiras
  * @author Laís de Assis Doria da Silva

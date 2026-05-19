@@ -1,6 +1,9 @@
-package shared;
+package shared.remote;
 
-import model.Client;
+import client.Client;
+import shared.dto.GuessRequestDTO;
+import shared.dto.GuessResponseDTO;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -19,7 +22,7 @@ public interface ServerInterface extends Remote {
     void registerUser(Client client) throws RemoteException;
 
     /** Verifica se a palavra enviada pelo cliente corresponde à palavra secreta. */
-    int [] verifyGuess(Client client, String word) throws RemoteException;
+    GuessResponseDTO verifyGuess(GuessRequestDTO guessRequestDTO) throws RemoteException;
 
     /** Recupera o index da palavra para o cliente específico. */
     int requestIndex(int index) throws RemoteException;

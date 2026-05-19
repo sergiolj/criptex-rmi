@@ -1,6 +1,6 @@
 package test;
 
-import model.Dictionary;
+import server.service.Dictionary;
 
 import java.util.List;
 

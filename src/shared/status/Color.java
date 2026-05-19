@@ -1,4 +1,4 @@
-package shared;
+package shared.status;
 
 /**
  * Classe que define as cores para as respostas do console quando da verificação pelo servidor da palavra enviada

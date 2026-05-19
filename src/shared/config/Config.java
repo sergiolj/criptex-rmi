@@ -1,4 +1,4 @@
-package shared;
+package shared.config;
 
 /**
  * Classe que define a configuração do servidor RMI.
