@@ -1,6 +1,6 @@
 package main;
 
-import server.APServerImplement;
+import server.remote.APServerImplement;
 import shared.config.Config;
 
 import java.rmi.registry.LocateRegistry;
