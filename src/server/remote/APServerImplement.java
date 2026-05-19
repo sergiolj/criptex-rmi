@@ -29,9 +29,17 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
     public APServerImplement() throws RemoteException {
     }
 
+    /**
+     * Falta implementar uma verificação para reconhecer o usuário, caso esse já tenha registro no servidor.
+     *
+     * @param client
+     * @throws RemoteException
+     */
     @Override
     public void registerUser(Client client) throws RemoteException {
         System.out.println("Registering online player: " + client.getName() + " UUID[" + client.getUuid() + "]");
+
+        // Antes de adicionar tem que testar se ele já não está registrado.
         clients.add(client);
     }
 

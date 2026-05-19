@@ -22,7 +22,7 @@ public class GuessResponseDTO implements Serializable {
     private final String guess;
     private final boolean wordMatch;
     private final int currentAttempt;
-    private final String enlapsedTime;
+    private final String elapsedTime;
 
     public GuessResponseDTO(int [] status, String guess, boolean wordMatch) {
         super();
@@ -30,13 +30,13 @@ public class GuessResponseDTO implements Serializable {
         this.guess = guess;
         this.wordMatch = wordMatch;
         this.currentAttempt = 0;
-        this.enlapsedTime = "0";
+        this.elapsedTime = "0";
     }
 
     public GuessResponseDTO() {
         super();
         this.currentAttempt = 0;
-        this.enlapsedTime = "0";
+        this.elapsedTime = "0";
         this.status = null;
         this.guess = null;
         this.wordMatch = false;
@@ -62,8 +62,8 @@ public class GuessResponseDTO implements Serializable {
         return currentAttempt;
     }
 
-    public String getEnlapsedTime() {
-        return enlapsedTime;
+    public String getElapsedTime() {
+        return elapsedTime;
     }
 
 }

@@ -19,10 +19,10 @@ public class MainServer {
 
     public static void main(String[] args) {
         try{
-            ServidorRMIimplement serviceMsgSrv = new ServidorRMIimplement();
-            Registry registry = LocateRegistry.createRegistry(Configuracao.SERVER_PORT);
-            registry.rebind(Configuracao.SERVER_NAME, serviceMsgSrv);
-            System.out.println("Servidor RMI \n[ServerName: " + Configuracao.SERVER_NAME + "] [port:" + Configuracao.SERVER_PORT + "] online...");
+            APServerImplement serviceMsgSrv = new APServerImplement();
+            Registry registry = LocateRegistry.createRegistry(Config.SERVER_PORT);
+            registry.rebind(Config.SERVER_NAME, serviceMsgSrv);
+            System.out.println("Servidor RMI \n[ServerName: " + Config.SERVER_NAME + "] [port:" + Config.SERVER_PORT + "] online...");
         }catch (Exception e ){
             System.out.println("Erro ao inicializar o Servidor RMI: " + e.getMessage());
         }

@@ -16,7 +16,7 @@ import java.util.Date;
 public class GameSession {
     private int attempt;
     private final int maxAttempts = 5;
-    private Date enlapsedTime;
+    private Date elapsedTime;
 
 
 }

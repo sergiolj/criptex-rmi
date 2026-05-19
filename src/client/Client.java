@@ -126,7 +126,7 @@ public class Client implements Serializable {
         System.out.println("-------------------------------------");
         System.out.printf("Tentativa: %d/5 | Tempo decorrido: %s%n",
                 response.getCurrentAttempt(),
-                response.getEnlapsedTime());
+                response.getElapsedTime());
         System.out.println("-------------------------------------");
     }
 }
