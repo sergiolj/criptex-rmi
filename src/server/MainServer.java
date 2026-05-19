@@ -1,11 +1,20 @@
 package server;
 
-import server.remote.ServidorRMIimplement;
-import shared.config.Configuracao;
+import server.remote.APServerImplement;
+import shared.config.Config;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+/**
+ * Inicializa o serviço do servidor RMI com base nas informações de configuração compartilhadas no pacote shared Config.
+ *
+ * @author Bruna Brito Muniz Filgueiras
+ * @author Laís de Assis Doria da Silva
+ * @author Sérgio Lopes Júnior
+ *
+ * @version 1.0
+ */
 public class MainServer {
 
     public static void main(String[] args) {
