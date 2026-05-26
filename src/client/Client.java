@@ -1,6 +1,6 @@
 package client;
 import server.GameSession;
-import server.service.Word;
+import server.engine.Word;
 import shared.status.Color;
 import shared.config.Config;
 import shared.dto.GuessRequestDTO;
@@ -107,12 +107,12 @@ public class Client implements Serializable {
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < 5; i++) {
             if (response.getStatus()[i] == 0) {
-                sb.append(Color.BG_CINZA).append(response.getGuess().charAt(i)).append(Color.RESET);
+                sb.append(Color.BG_GRAY).append(response.getGuess().charAt(i)).append(Color.RESET);
             } else if (response.getStatus()[i] == 1) {
-                sb.append(Color.BG_AMARELO).append(response.getGuess().charAt(i)).append(Color.RESET);
+                sb.append(Color.BG_YELLOW).append(response.getGuess().charAt(i)).append(Color.RESET);
 
             } else if (response.getStatus()[i] == 2) {
-                sb.append(Color.BG_VERDE).append(response.getGuess().charAt(i)).append(Color.RESET);
+                sb.append(Color.BG_GREEN).append(response.getGuess().charAt(i)).append(Color.RESET);
             }
             sb.append(" ");
         }
