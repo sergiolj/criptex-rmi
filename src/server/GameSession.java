@@ -16,7 +16,10 @@ import java.io.Serializable;
 public class GameSession implements Serializable {
     private int attempt = 0;
     private final int maxAttempts = 5;
-    private Date elapsedTime;
+
+    public void increaseAttempt() {
+        attempt++;
+    }
 
     public int getAttempt() {
         return attempt;

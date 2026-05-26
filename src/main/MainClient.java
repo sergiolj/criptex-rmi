@@ -17,28 +17,35 @@ import java.util.Scanner;
 public class MainClient {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        boolean wordMatch = false;
-        Client client;
-        String name;
 
-        try{
-            System.out.print("Digite o nome do jogador ou <ENTER>:");
-            name = sc.nextLine();
+        try {
+            System.out.println("===== LETRECO - ADIVINHE A PALAVRA =====");
+            System.out.println("Regras:");
+            System.out.println("- A palavra possui 5 letras.");
+            System.out.println("- Você tem 5 tentativas.");
+            System.out.println("- Verde: letra certa no lugar certo.");
+            System.out.println("- Amarelo: letra existe, mas está no lugar errado.");
+            System.out.println("- Cinza: letra não existe na palavra.");
+            System.out.println("========================================");
 
-            if(name.isEmpty()){
-                client = new Client();
-            }else{
-                client = new Client(name);
-            }
+            Client client = new Client();
+            boolean wordMatch = false;
 
-            while(!wordMatch){
-                System.out.print("Digite seu palpite: ");
+            while (!wordMatch && client.getGameSession().hasAttempts()) {
+                System.out.print("\nDigite seu palpite: ");
                 String guess = sc.nextLine();
+
                 wordMatch = client.verifyGuess(guess);
             }
+
+            if (wordMatch) {
+                System.out.println("\nParabéns! Você descobriu a palavra da rodada.");
+            } else {
+                System.out.println("\nSuas tentativas acabaram. Você não descobriu a palavra.");
+            }
+
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Parabéns! Você descobriu a palavra da rodada.");
-   }
+    }
 }

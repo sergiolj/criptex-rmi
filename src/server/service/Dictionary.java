@@ -120,7 +120,11 @@ public class Dictionary {
         return new ArrayList<>(this.words);
     }
 
-    public int getIndexOfWorld(){
-        return 0;
+    public int getIndexOfWorld() {
+        if (words.isEmpty()) {
+            return -1;
+        }
+
+        return random.nextInt(words.size());
     }
 }
