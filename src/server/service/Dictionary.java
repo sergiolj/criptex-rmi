@@ -4,9 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.Normalizer;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 /**
@@ -23,14 +23,14 @@ public class Dictionary {
     private static Dictionary instance;
     private final String dictionaryPath = "resources/palavras.txt";
     private final List<String> words = new ArrayList<>();
-
-    /** Implementa um contador de tempo para troca da palavra secreta. */
-    private final WordScheduler ws = new WordScheduler(Instant.now());
+    private final Random random = new Random();
 
 
-    /** Remove todos os acentos e cedilha de uma string, convertendo em caracteres básicos de A-Z. */
+    /**
+     * Remove todos os acentos e cedilha de uma string, convertendo em caracteres básicos de A-Z.
+     */
     private String removeAccentFromWord(String word) {
-        String normalizedWord = Normalizer.normalize(word, Normalizer.Form.NFD);
+        String normalizedWord = Normalizer.normalize(word, Normalizer.Form.NFC);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         return pattern.matcher(normalizedWord).replaceAll("");
     }
@@ -40,30 +40,34 @@ public class Dictionary {
      * substituição do dicionário por outro ou por outra linguagem. Possibilitando ao usuário escolher o idioma que
      * deseja jogar ou até temática de palavras, por exemplo.
      */
-    private void readRawDictionary(){
-        try{
+    private void readRawDictionary() {
+        try {
             BufferedReader br = new BufferedReader(new FileReader(dictionaryPath));
             String currentLine;
             while ((currentLine = br.readLine()) != null) {
                 currentLine = currentLine.trim();
                 if (currentLine.length() == 5) {
                     String wordModified = removeAccentFromWord(currentLine.toUpperCase());
-                    if(wordModified.matches("^[A-Z]+$")){
+                    if (wordModified.matches("^[A-Z]+$")) {
                         words.add(wordModified);
                     }
                 }
             }
+            br.close();
         } catch (IOException e) {
             System.out.println("Erro ao acessar arquivo base do dicionário em " + dictionaryPath);
         }
     }
 
-    /** Todas as palavras devem ter cinco letras para o estilo do jogo. */
+    /**
+     * Todas as palavras devem ter cinco letras para o estilo do jogo.
+     */
     private Dictionary() {
         readRawDictionary();
-        }
+    }
 
-        /** Retorna a instância única do dicionário simulando um BD centralizado.
+    /**
+     * Retorna a instância única do dicionário simulando um BD centralizado.
      * Utiliza synchronized para evitar problemas de concorrência na criação da instância em ambiente
      * com múltiplos usuários simultâneos
      */
@@ -81,14 +85,33 @@ public class Dictionary {
      * @return A palavra em caixa alta ou mensagem de erro caso o índice seja inválido.
      */
     public String getWord(int index) {
-        if (index >=0 && index < words.size()) {
+        if (index >= 0 && index < words.size()) {
             return words.get(index).toUpperCase();
-        }else{
+        } else {
             return "FIM";
         }
     }
 
-    /** Retorna a quantidade total de palavras no dicionário. */
+    public String getWord() {
+        if (words.isEmpty()) {
+            return "FIM";
+        }
+        int index = random.nextInt(words.size());
+        return words.get(index).toUpperCase();
+    }
+
+    public boolean wordExists(String word) {
+        if (word == null) {
+            return false;
+        }
+        String wordModified = removeAccentFromWord(word.trim().toUpperCase());
+
+        return words.contains(wordModified);
+    }
+
+    /**
+     * Retorna a quantidade total de palavras no dicionário.
+     */
     public int size() {
         return words.size();
     }
@@ -97,21 +120,11 @@ public class Dictionary {
         return new ArrayList<>(this.words);
     }
 
-    /**
-     * Seleciona a palavra do dicionário com base na contagem de tempo do servidor.
-     * @return
-     */
-    public synchronized String getCurrentSecretWord(){
-        Instant now = Instant.now();
+    public int getIndexOfWorld() {
+        if (words.isEmpty()) {
+            return -1;
+        }
 
-        long segundosDecorridos = now.getEpochSecond() - ws.getStartTime().getEpochSecond();
-
-        // 2. Descobre em qual "rodada" ou ciclo de tempo nós estamos atualmente
-        long rodadaAtual = segundosDecorridos / ws.getINTERVAL_TO_CHANGE_SECRET_WORD();
-
-        // 3. Usa o resto da divisão (%) para não estourar o tamanho da lista de palavras
-        int wordIndex = (int) (rodadaAtual % words.size());
-
-        return words.get(wordIndex);
+        return random.nextInt(words.size());
     }
 }

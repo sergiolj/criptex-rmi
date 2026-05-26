@@ -1,4 +1,4 @@
-package server.remote;
+package server;
 
 import client.Client;
 import server.service.Dictionary;
@@ -23,49 +23,35 @@ import java.util.List;
 public class APServerImplement extends UnicastRemoteObject implements ServerInterface {
     private final List<Client> clients = new ArrayList<>();
     private final Dictionary dictionary = Dictionary.getInstance();
-    private char [] charVerified = new char[5];
-    private int countCharOk = 0;
+    private final String secretWord;
 
     public APServerImplement() throws RemoteException {
+        this.secretWord = dictionary.getWord().toUpperCase();
+        System.out.print("Palavra secreta da rodada: " + secretWord);
     }
 
-    /**
-     * Falta implementar uma verificação para reconhecer o usuário, caso esse já tenha registro no servidor.
-     *
-     * @param client
-     * @throws RemoteException
-     */
     @Override
     public void registerUser(Client client) throws RemoteException {
+        for(Client registeredClient : clients) {
+            if(registeredClient.getUuid().equals(client.getUuid())) {
+                System.out.println("Jogador já registrado: " + client.getName());
+                return;
+            }
+        }
         System.out.println("Registering online player: " + client.getName() + " UUID[" + client.getUuid() + "]");
-
-        // Antes de adicionar tem que testar se ele já não está registrado.
         clients.add(client);
     }
 
 
     @Override
     public GuessResponseDTO verifyGuess(GuessRequestDTO guessRequestDTO) throws RemoteException {
-        String secretWord = dictionary.getCurrentSecretWord();
         String guessWord = guessRequestDTO.getGuess().toUpperCase();
 
-        System.out.printf("Secret Word <" + secretWord + "> - Analysing attempt from player [UUID: %s)%n",
-                guessRequestDTO.getUuid());
-
-        /**
-         * Array que irá receber os valores verificados para as letras da palavra do palpite do jogador:
-         * 0 - Letra não encontrada
-         * 1 - Letra encontrada na posição errada
-         * 2 - Letra encontrada na posição certa
-         */
         int[] status = new int[5];
 
         boolean [] secretPositionsUsed = new boolean [5];
         boolean [] guessPositionsUsed = new boolean [5];
-        /**
-         * Algoritmo que busca se a letra na posição i da palavra do palpite do jogador é igual a letra na mesma posição
-         * da palavra secreta. Se sim o array de verificação recebe o valor 2 que indica letra certa na posição certa.
-         */
+
         for (int i = 0; i < 5; i++) {
             if (guessWord.charAt(i) == secretWord.charAt(i)) {
                 status[i] = 2;
@@ -74,12 +60,10 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
             }
         }
 
-        /**
-         * Se uma letra do palpite já foi verificada e encontrada na palavra secreta a mesma não pode mais ser
-         * verificada em outras posições da palavra secreta.
-         */
         for (int i = 0; i < 5; i++) {
-            if (guessPositionsUsed[i]) continue;
+            if (guessPositionsUsed[i]) {
+                continue;
+            }
 
             for (int j = 0; j < 5; j++) {
                 if(!secretPositionsUsed[j] && guessWord.charAt(i) == secretWord.charAt(j)) {
@@ -91,18 +75,22 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
         }
         System.out.println("Result from player [UUID: " + guessRequestDTO.getUuid() + "] STATUS: " + Arrays.toString(status));
 
-        boolean wordMatch;
-        wordMatch = Arrays.stream(status).allMatch(v -> v == 2);
+        boolean wordMatch = Arrays.stream(status).allMatch(v -> v == 2);
         return new GuessResponseDTO(status, guessWord, wordMatch);
     }
 
 
-    private boolean letterVerified(char c){
+    @Override
+    public int requestIndex() throws RemoteException {
+        return dictionary.getIndexOfWorld();
+    }
+
+   /* private boolean letterVerified(char c){
         for(int i = 0; i < countCharOk; i++) {
             if (charVerified[i] == c) {
                 return true;
             }
         }
         return false;
-    }
+    } */
 }
