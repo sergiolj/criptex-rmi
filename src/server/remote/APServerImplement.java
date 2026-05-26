@@ -1,4 +1,4 @@
-package server;
+package server.remote;
 
 import client.Client;
 import server.service.Dictionary;
