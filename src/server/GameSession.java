@@ -1,7 +1,7 @@
 package server;
 
+import java.io.Serializable;
 
-import java.util.Date;
 
 /**
  *
@@ -13,10 +13,20 @@ import java.util.Date;
  *
  * @version 1.0
  */
-public class GameSession {
-    private int attempt;
+public class GameSession implements Serializable {
+    private int attempt = 0;
     private final int maxAttempts = 5;
     private Date elapsedTime;
 
+    public int getAttempt() {
+        return attempt;
+    }
 
+    public int getMaxAttempts() {
+        return maxAttempts;
+    }
+
+    public boolean hasAttempts() {
+        return attempt < maxAttempts;
+    }
 }
