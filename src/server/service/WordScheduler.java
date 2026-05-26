@@ -12,7 +12,7 @@ import java.time.Instant;
  */
 public class WordScheduler {
     private final Instant startTime;
-    private final long INTERVAL_TO_CHANGE_SECRET_WORD = 60; // 2 minutos
+    private final long INTERVAL_TO_CHANGE_SECRET_WORD = 300; // 2 minutos
 
 
     public WordScheduler(Instant startTime) {
