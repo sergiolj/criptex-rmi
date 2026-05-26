@@ -16,17 +16,24 @@ public class Color {
     public static final String RESET = "\u001B[0m";
 
     /** Letra certa, lugar certo. */
-    public static final String VERDE = "\u001B[32m";
+    public static final String GREEN = "\u001B[32m";
 
     /** Letra certa, lugar errado. */
-    public static final String AMARELO = "\u001B[33m";
+    public static final String YELLOW = "\u001B[33m";
 
     /** Letra não existe na palavra. */
-    public static final String CINZA = "\u001B[37m";
+    public static final String GRAY = "\u001B[37m";
 
-    public static final String BG_VERDE = "\u001B[42m";
-    public static final String BG_AMARELO = "\u001B[43m";
-    public static final String BG_CINZA = "\u001B[47m";
+    public static final String BG_GREEN = "\u001B[42m";
+    public static final String BG_YELLOW = "\u001B[43m";
+    public static final String BG_GRAY = "\u001B[47m";
+    public static final String BOLD = "\u001B[1m";
+
+    public static final String CYAN = "\u001B[36m";
+    public final static String PURPLE = "\u001B[35m";
+    public final static String WHITE_BG_BLACK = "\u001B[37;40m";
+
+    public static final String RED = "\u001B[31m";
 }
 
 //Exemplo de uso

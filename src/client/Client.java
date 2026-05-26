@@ -25,10 +25,8 @@ import java.util.UUID;
 public class Client implements Serializable {
     private final Registry registry;
     private final ServerInterface proxy;
-    private int index = 0;
 
     private int score = 0;
-    private int attempt = 0;
 
     /** Parâmetro que cria um identificador único para o jogador (UUID Universally Unique Identifier) */
     private final UUID uuid;
@@ -59,18 +57,6 @@ public class Client implements Serializable {
         }
     }
 
-    public void increaseAttempt() {
-         this.attempt++;
-    }
-
-    public int getAttempts() {
-         return this.attempt;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
     public int getScore() {
         return score;
     }
@@ -95,12 +81,10 @@ public class Client implements Serializable {
 
          if(word.validate(guess)){
              try {
-                 this.proxy.requestIndex(index);
                  request = new GuessRequestDTO(this.uuid, guess);
                  response = this.proxy.verifyGuess(request);
 
                  formatResponse(response);
-                 attempt++;
              } catch (RemoteException e) {
                  throw new RuntimeException(e);
              }
@@ -114,19 +98,19 @@ public class Client implements Serializable {
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < 5; i++) {
             if(response.getStatus()[i] == 0) {
-                sb.append(Color.BG_CINZA).append(response.getGuess().charAt(i));
+                sb.append(Color.BG_GRAY).append(response.getGuess().charAt(i));
             }else if(response.getStatus()[i] == 1) {
-                sb.append(Color.BG_AMARELO).append(response.getGuess().charAt(i));
+                sb.append(Color.BG_YELLOW).append(response.getGuess().charAt(i));
             }else if(response.getStatus()[i] == 2) {
-                sb.append(Color.BG_VERDE).append(response.getGuess().charAt(i));
+                sb.append(Color.BG_GREEN).append(response.getGuess().charAt(i));
             }
         }
         sb.append(Color.RESET);
         System.out.println("< " + sb.toString() + " >");
-        System.out.println("-------------------------------------");
-        System.out.printf("Tentativa: %d/5 | Tempo decorrido: %s%n",
-                response.getCurrentAttempt(),
-                response.getElapsedTime());
-        System.out.println("-------------------------------------");
+//        System.out.println("-------------------------------------");
+//        System.out.printf("Tentativa: %d/5 | Tempo decorrido: %s%n",
+//                response.getCurrentAttempt(),
+//                response.getElapsedTime());
+//        System.out.println("-------------------------------------");
     }
 }

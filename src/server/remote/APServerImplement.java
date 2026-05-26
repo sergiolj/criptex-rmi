@@ -46,19 +46,11 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
 
     @Override
     public GuessResponseDTO verifyGuess(GuessRequestDTO guessRequestDTO) throws RemoteException {
-        String secretWord = dictionary.getWord(dictionary.getIndexOfWorld());
+        String secretWord = dictionary.getCurrentSecretWord();
         String guessWord = guessRequestDTO.getGuess().toUpperCase();
 
         System.out.printf("Secret Word <" + secretWord + "> - Analysing attempt from player [UUID: %s)%n",
                 guessRequestDTO.getUuid());
-
-//            client = clients.get(clients.indexOf(client));
-//            client.increaseAttempt();
-//            if(client.getAttempts() >5){
-//                System.out.println("Você não conseguiu descobrir a palavra dessa vez. :_(" );
-//                //Sai do loop e impede novas tentativas
-//            }
-
 
         /**
          * Array que irá receber os valores verificados para as letras da palavra do palpite do jogador:
@@ -104,11 +96,6 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
         return new GuessResponseDTO(status, guessWord, wordMatch);
     }
 
-
-    @Override
-    public int requestIndex(int index) throws RemoteException {
-        return 0;
-    }
 
     private boolean letterVerified(char c){
         for(int i = 0; i < countCharOk; i++) {

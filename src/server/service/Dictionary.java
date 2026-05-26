@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.Normalizer;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -23,10 +24,13 @@ public class Dictionary {
     private final String dictionaryPath = "resources/palavras.txt";
     private final List<String> words = new ArrayList<>();
 
+    /** Implementa um contador de tempo para troca da palavra secreta. */
+    private final WordScheduler ws = new WordScheduler(Instant.now());
+
 
     /** Remove todos os acentos e cedilha de uma string, convertendo em caracteres básicos de A-Z. */
     private String removeAccentFromWord(String word) {
-        String normalizedWord = Normalizer.normalize(word, Normalizer.Form.NFC);
+        String normalizedWord = Normalizer.normalize(word, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         return pattern.matcher(normalizedWord).replaceAll("");
     }
@@ -93,7 +97,21 @@ public class Dictionary {
         return new ArrayList<>(this.words);
     }
 
-    public int getIndexOfWorld(){
-        return 0;
+    /**
+     * Seleciona a palavra do dicionário com base na contagem de tempo do servidor.
+     * @return
+     */
+    public synchronized String getCurrentSecretWord(){
+        Instant now = Instant.now();
+
+        long segundosDecorridos = now.getEpochSecond() - ws.getStartTime().getEpochSecond();
+
+        // 2. Descobre em qual "rodada" ou ciclo de tempo nós estamos atualmente
+        long rodadaAtual = segundosDecorridos / ws.getINTERVAL_TO_CHANGE_SECRET_WORD();
+
+        // 3. Usa o resto da divisão (%) para não estourar o tamanho da lista de palavras
+        int wordIndex = (int) (rodadaAtual % words.size());
+
+        return words.get(wordIndex);
     }
 }

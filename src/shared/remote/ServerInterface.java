@@ -23,7 +23,4 @@ public interface ServerInterface extends Remote {
 
     /** Verifica se a palavra enviada pelo cliente corresponde à palavra secreta. */
     GuessResponseDTO verifyGuess(GuessRequestDTO guessRequestDTO) throws RemoteException;
-
-    /** Recupera o index da palavra para o cliente específico. */
-    int requestIndex(int index) throws RemoteException;
 }
