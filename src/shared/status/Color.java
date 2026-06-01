@@ -34,6 +34,8 @@ public class Color {
     public final static String WHITE_BG_BLACK = "\u001B[37;40m";
 
     public static final String RED = "\u001B[31m";
+
+
 }
 
 //Exemplo de uso

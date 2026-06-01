@@ -22,26 +22,30 @@ public class GuessResponseDTO implements Serializable {
     private final String guess;
     private final boolean wordMatch;
     private final int currentAttempt;
-    private final String elapsedTime;
+    //private final String enlapsedTime;
 
-    public GuessResponseDTO(int [] status, String guess, boolean wordMatch) {
-        super();
+    public GuessResponseDTO(int[] status, String guess, boolean wordMatch) {
         this.status = status;
         this.guess = guess;
         this.wordMatch = wordMatch;
         this.currentAttempt = 0;
-        this.elapsedTime = "0";
+        //this.enlapsedTime = "0";
+    }
+
+    public GuessResponseDTO(int[] status, String guess, boolean wordMatch, int currentAttempt) {
+        this.currentAttempt = currentAttempt;
+        //this.enlapsedTime = "0";
+        this.status = status;
+        this.guess = guess;
+        this.wordMatch = wordMatch;
     }
 
     public GuessResponseDTO() {
-        super();
-        this.currentAttempt = 0;
-        this.elapsedTime = "0";
         this.status = null;
         this.guess = null;
         this.wordMatch = false;
+        this.currentAttempt = 0;
     }
-
     /**
      *
      * @return um array de inteiros com as respostas da verificação.
@@ -62,8 +66,8 @@ public class GuessResponseDTO implements Serializable {
         return currentAttempt;
     }
 
-    public String getElapsedTime() {
-        return elapsedTime;
-    }
+    //public String getEnlapsedTime() {
+    //    return enlapsedTime;
+   // }
 
 }

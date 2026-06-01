@@ -13,7 +13,6 @@ import java.io.Serializable;
  * @version 1.0
  */
 public class Word implements Serializable {
-    private String word;
 
     public Word() {}
 
@@ -24,14 +23,15 @@ public class Word implements Serializable {
      * @return true caso todas as regras sejam validadas e falso caso não valide ao menos uma.
      */
     public boolean validate(String word) {
-        return wordSize(word) && wordExists(word);
+        return wordSize(word);
     }
 
     private boolean wordSize(String word) {
-        return word.length() == 5;
+        return word != null && word.trim().length() == 5;
     }
 
-    private boolean wordExists(String word) {
-        return true;
-    }
+   /* private boolean wordExists(String word) {
+        Dictionary dictionary = Dictionary.getInstance();
+        return dictionary.wordExists(word);
+    } */
 }
