@@ -1,8 +1,12 @@
 package server.service;
 
 import java.time.Instant;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 /**
- * Contador de tempo para determinar a mudança da palavra secreta.
+ * Contador de tempo usado para determinar a execução de uma tarefa em intervalo regular.
  *
  * @author Bruna Brito Muniz Filgueiras
  * @author Laís de Assis Doria da Silva
@@ -12,18 +16,35 @@ import java.time.Instant;
  */
 public class WordScheduler {
     private final Instant startTime;
-    private final long INTERVAL_TO_CHANGE_SECRET_WORD = 300; // 2 minutos
 
+    /** Atributo que define em segundos o tempo para a troca da palavra secreta.*/
+    private static final long TIME_INTERVAL = 300;
 
-    public WordScheduler(Instant startTime) {
-        this.startTime = startTime;
+    /** Interface que cria um serviço gerenciador de threads (Pool de serviços)
+     *  para executar uma tarefa com base em um intervalo de tempo.*/
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+    /** Recebe uma instância da interface Runnable para ser executada com intervalo de tempo definido pelo atributo da classe.
+     * Qualquer método pode ser um Runable deste que retorne void e não receba parâmetros.
+     * */
+    public void startSecretWordMonitor(Runnable task) {
+        scheduler.scheduleAtFixedRate(task, TIME_INTERVAL, TIME_INTERVAL, TimeUnit.SECONDS);
+    }
+
+    /** Inicializa a classe tendo como referência um dado de tempo.*/
+    public WordScheduler() {
+        this.startTime = Instant.now();
     }
 
     public Instant getStartTime() {
         return startTime;
     }
 
-    public long getINTERVAL_TO_CHANGE_SECRET_WORD() {
-        return INTERVAL_TO_CHANGE_SECRET_WORD;
+    public long getTIME_INTERVAL() {
+        return TIME_INTERVAL;
+    }
+
+    public void shutdown() {
+        scheduler.shutdown();
     }
 }

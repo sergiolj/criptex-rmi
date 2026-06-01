@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 /**
  * Banco de dados de palavras do jogo Adivinha a Palavra
  * Implementado como um Singleton Thread-Safe para garantir a integridade dos dados em acessos simultâneos via RMI.
+ * Tem a função de ler um arquivo bruto de palavras e através de métodos de seleção adicionar apenas palavras válidas.
  *
  * @author Bruna Brito Muniz Filgueiras
  * @author Laís de Assis Doria da Silva
@@ -24,9 +25,10 @@ public class Dictionary {
     private final String dictionaryPath = "resources/palavras.txt";
     private final List<String> words = new ArrayList<>();
 
-    /** Implementa um contador de tempo para troca da palavra secreta. */
-    private final WordScheduler ws = new WordScheduler(Instant.now());
-
+    /** Todas as palavras devem ter cinco letras para o estilo do jogo. */
+    private Dictionary() {
+        readRawDictionary();
+    }
 
     /** Remove todos os acentos e cedilha de uma string, convertendo em caracteres básicos de A-Z. */
     private String removeAccentFromWord(String word) {
@@ -58,12 +60,7 @@ public class Dictionary {
         }
     }
 
-    /** Todas as palavras devem ter cinco letras para o estilo do jogo. */
-    private Dictionary() {
-        readRawDictionary();
-        }
-
-        /** Retorna a instância única do dicionário simulando um BD centralizado.
+    /** Retorna a instância única do dicionário simulando um BD centralizado.
      * Utiliza synchronized para evitar problemas de concorrência na criação da instância em ambiente
      * com múltiplos usuários simultâneos
      */
@@ -74,44 +71,16 @@ public class Dictionary {
         return instance;
     }
 
-    /**
-     * Recupera uma palavra específica do dicionário com base em um índice fornecido.
-     *
-     * @param index O índice da palavra desejada.
-     * @return A palavra em caixa alta ou mensagem de erro caso o índice seja inválido.
-     */
-    public String getWord(int index) {
-        if (index >=0 && index < words.size()) {
-            return words.get(index).toUpperCase();
-        }else{
-            return "FIM";
-        }
-    }
-
     /** Retorna a quantidade total de palavras no dicionário. */
     public int size() {
         return words.size();
     }
 
-    public List<String> getDictionaryList() {
-        return new ArrayList<>(this.words);
-    }
-
     /**
-     * Seleciona a palavra do dicionário com base na contagem de tempo do servidor.
-     * @return
+     * Seleciona a palavra do dicionário com base em um index.
+     * @return current secretWord
      */
-    public synchronized String getCurrentSecretWord(){
-        Instant now = Instant.now();
-
-        long segundosDecorridos = now.getEpochSecond() - ws.getStartTime().getEpochSecond();
-
-        // 2. Descobre em qual "rodada" ou ciclo de tempo nós estamos atualmente
-        long rodadaAtual = segundosDecorridos / ws.getINTERVAL_TO_CHANGE_SECRET_WORD();
-
-        // 3. Usa o resto da divisão (%) para não estourar o tamanho da lista de palavras
-        int wordIndex = (int) (rodadaAtual % words.size());
-
-        return words.get(wordIndex);
+    public String getWord(int index) {
+        return words.get(index);
     }
 }

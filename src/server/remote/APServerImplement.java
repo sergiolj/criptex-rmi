@@ -1,13 +1,20 @@
 package server.remote;
 
 import client.Client;
-import server.service.Dictionary;
+import server.service.GameManager;
+import shared.config.Config;
 import shared.dto.GuessRequestDTO;
 import shared.remote.ServerInterface;
 import shared.dto.GuessResponseDTO;
+import shared.status.Color;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,11 +29,14 @@ import java.util.List;
  */
 public class APServerImplement extends UnicastRemoteObject implements ServerInterface {
     private final List<Client> clients = new ArrayList<>();
-    private final Dictionary dictionary = Dictionary.getInstance();
-    private char [] charVerified = new char[5];
-    private int countCharOk = 0;
+    private final GameManager gameManager;
 
     public APServerImplement() throws RemoteException {
+        super();
+        this.gameManager = new GameManager(newSecretWord ->{
+            System.out.println("[\u001B[34m" + LocalTime.now() + "\u001B[0m] " +
+                    "[" + Config.SERVER_NAME + "] A palavra secreta atual é: " + newSecretWord);
+        });
     }
 
     /**
@@ -46,10 +56,11 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
 
     @Override
     public GuessResponseDTO verifyGuess(GuessRequestDTO guessRequestDTO) throws RemoteException {
-        String secretWord = dictionary.getCurrentSecretWord();
+        String secretWord = gameManager.getSecretWord().toString();
+
         String guessWord = guessRequestDTO.getGuess().toUpperCase();
 
-        System.out.printf("Secret Word <" + secretWord + "> - Analysing attempt from player [UUID: %s)%n",
+        System.out.printf("[" + Color.GREEN + LocalTime.now() + Color.RESET + "] Analysing attempt from player [UUID: %s]%n",
                 guessRequestDTO.getUuid());
 
         /**
@@ -60,8 +71,8 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
          */
         int[] status = new int[5];
 
-        boolean [] secretPositionsUsed = new boolean [5];
-        boolean [] guessPositionsUsed = new boolean [5];
+        boolean[] secretPositionsUsed = new boolean[5];
+        boolean[] guessPositionsUsed = new boolean[5];
         /**
          * Algoritmo que busca se a letra na posição i da palavra do palpite do jogador é igual a letra na mesma posição
          * da palavra secreta. Se sim o array de verificação recebe o valor 2 que indica letra certa na posição certa.
@@ -82,27 +93,28 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
             if (guessPositionsUsed[i]) continue;
 
             for (int j = 0; j < 5; j++) {
-                if(!secretPositionsUsed[j] && guessWord.charAt(i) == secretWord.charAt(j)) {
+                if (!secretPositionsUsed[j] && guessWord.charAt(i) == secretWord.charAt(j)) {
                     status[i] = 1;
                     secretPositionsUsed[j] = true;
                     break;
                 }
             }
         }
-        System.out.println("Result from player [UUID: " + guessRequestDTO.getUuid() + "] STATUS: " + Arrays.toString(status));
+        System.out.println("[" + Color.GREEN + LocalTime.now() + Color.RESET + "] Result from player [UUID: " + guessRequestDTO.getUuid() + "] STATUS: " + Arrays.toString(status));
 
         boolean wordMatch;
         wordMatch = Arrays.stream(status).allMatch(v -> v == 2);
         return new GuessResponseDTO(status, guessWord, wordMatch);
     }
 
-
-    private boolean letterVerified(char c){
-        for(int i = 0; i < countCharOk; i++) {
-            if (charVerified[i] == c) {
-                return true;
-            }
+    public void shutdown() {
+        gameManager.shutdown();
+        try{
+            UnicastRemoteObject.unexportObject(this, true);
+            System.out.println( "["+ Color.RED + "ServerName: " + Config.SERVER_NAME + Color.RESET + "] " +
+                    "Desconectando servidor RMI...");
+        }catch (RemoteException e){
+            System.out.println("Erro ao desligar servidor RMI: " + e.getMessage());
         }
-        return false;
     }
 }

@@ -1,0 +1,74 @@
+package server.service;
+
+import shared.config.Config;
+
+import java.time.Instant;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+
+/**
+ * GameManager gerencia e instancia as classes necessárias para o servidor RMI.
+ */
+public class GameManager {
+    //Cria uma classe cronograma para agendar a mudança das palavras por intervalo de tempo
+    private final WordScheduler scheduler;
+
+    //Cria o dicionário de palavras
+    private final Dictionary dictionary;
+
+    /**Consumer é uma "Interface Funcional" do Java que armazena um bloco de código que sabe o que fazer quando recebe um
+    tipo de dado como <String> nesse caso.*/
+    private final Consumer<String> onWordChanged;
+
+    //Cria uma referência Atômica para a palavra secreta para evitar problemas de concorrência.
+    private final AtomicReference<String> secretWord;
+
+
+    public GameManager(Consumer<String> onWordChanged) {
+        this.scheduler = new WordScheduler();
+        this.dictionary = Dictionary.getInstance();
+        this.secretWord = new AtomicReference<>(dictionary.getWord(0)); //inicia sempre com a mesma referência.
+
+        this.onWordChanged = onWordChanged;
+        if(onWordChanged != null) {
+            onWordChanged.accept(secretWord.get());
+        }
+        scheduler.startSecretWordMonitor(this::updateSecretWord);
+    }
+
+    /**
+     * Atualiza a referência String da palavra secreta com base no tempo que o WordSchedule foi instanciado. O índice
+     * inicia em 0 e é incrementado com base no tempo especificado pela constante da classe.
+     */
+    public void updateSecretWord(){
+        Instant now = Instant.now();
+
+        long segundosDecorridos = now.getEpochSecond() - scheduler.getStartTime().getEpochSecond();
+
+        // 2. Descobre em qual "rodada" ou ciclo de tempo nós estamos atualmente
+        long rodadaAtual = segundosDecorridos / scheduler.getTIME_INTERVAL();
+
+        // 3. Usa o resto da divisão (%) para não estourar o tamanho da lista de palavras
+        int wordIndex = (int) (rodadaAtual % dictionary.size());
+
+        String word = dictionary.getWord(wordIndex);
+        this.secretWord.set(word);
+
+        //Teste utilizado para verificar se a palavra é uma String e atualizar a palavra no console do servidor
+        if(onWordChanged != null){
+            this.onWordChanged.accept(word);
+        }
+    }
+
+    public AtomicReference<String> getSecretWord() {
+        return secretWord;
+    }
+
+    public void shutdown() {
+        if(scheduler !=null){
+            scheduler.shutdown();
+            System.out.println("[ServerName: " + Config.SERVER_NAME + "] " +
+                    "Encerrando controle de atualização da palavra secreta...");
+        }
+    }
+}
