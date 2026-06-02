@@ -1,5 +1,7 @@
 package server.service;
 
+import shared.status.Color;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -31,7 +33,7 @@ public class Dictionary {
     }
 
     /** Remove todos os acentos e cedilha de uma string, convertendo em caracteres básicos de A-Z. */
-    private String removeAccentFromWord(String word) {
+    public String removeAccentFromWord(String word) {
         String normalizedWord = Normalizer.normalize(word, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         return pattern.matcher(normalizedWord).replaceAll("");
@@ -56,7 +58,8 @@ public class Dictionary {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Erro ao acessar arquivo base do dicionário em " + dictionaryPath);
+            System.out.println("[" + Color.RED + "FATAL ERROR" + Color.RESET +
+                    "] Erro ao acessar arquivo base do dicionário em " + dictionaryPath);
         }
     }
 
@@ -82,5 +85,9 @@ public class Dictionary {
      */
     public String getWord(int index) {
         return words.get(index);
+    }
+
+    public boolean wordExists(String word) {
+        return words.contains(word);
     }
 }

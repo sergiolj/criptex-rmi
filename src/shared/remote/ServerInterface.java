@@ -8,7 +8,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
- * Interface que determina o contrato entre cliente e servidor RMI para o jogo Adivinha Palavra.
+ * Interface que determina o contrato entre cliente e servidor RMI para o jogo CRIPTEX RMI.
  *
  * @author Bruna Brito Muniz Filgueiras
  * @author Lais de Assis Doria da Silva
@@ -23,5 +23,4 @@ public interface ServerInterface extends Remote {
 
     /** Verifica se a palavra enviada pelo cliente corresponde à palavra secreta. */
     GuessResponseDTO verifyGuess(GuessRequestDTO guessRequestDTO) throws RemoteException;
-
 }

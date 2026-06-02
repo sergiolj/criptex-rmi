@@ -1,5 +1,7 @@
 package server.engine;
 
+import server.service.Dictionary;
+
 import java.io.Serializable;
 
 /**
@@ -23,15 +25,17 @@ public class Word implements Serializable {
      * @return true caso todas as regras sejam validadas e falso caso não valide ao menos uma.
      */
     public boolean validate(String word) {
-        return wordSize(word);
+        return wordSize(word) && wordExists(word);
     }
 
     private boolean wordSize(String word) {
         return word != null && word.trim().length() == 5;
     }
 
-   /* private boolean wordExists(String word) {
+    private boolean wordExists(String word) {
         Dictionary dictionary = Dictionary.getInstance();
-        return dictionary.wordExists(word);
-    } */
+        String verifyWord = dictionary.removeAccentFromWord(word);
+
+        return dictionary.wordExists(verifyWord.trim().toUpperCase());
+    }
 }

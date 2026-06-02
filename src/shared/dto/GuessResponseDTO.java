@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 /**
  *
- * Resposta do servidor para a consulta da palavra do jogador.
+ * Data Transfer Object que envia a resposta do servidor para a consulta da palavra do jogador.
  *
  *
  * @author Bruna Brito Muniz Filgueiras
@@ -22,6 +22,9 @@ public class GuessResponseDTO implements Serializable {
     private final String guess;
     private final boolean wordMatch;
     private final int currentAttempt;
+
+    //**A passagem do tempo pode ser uma forma de definir o Ranking dos vencedores, mas não foi implementada ainda
+    // Talvez possa ser implementada na classe GameSession*/
     //private final String enlapsedTime;
 
     public GuessResponseDTO(int[] status, String guess, boolean wordMatch) {
@@ -38,13 +41,6 @@ public class GuessResponseDTO implements Serializable {
         this.status = status;
         this.guess = guess;
         this.wordMatch = wordMatch;
-    }
-
-    public GuessResponseDTO() {
-        this.status = null;
-        this.guess = null;
-        this.wordMatch = false;
-        this.currentAttempt = 0;
     }
     /**
      *
@@ -65,9 +61,5 @@ public class GuessResponseDTO implements Serializable {
     public int getCurrentAttempt() {
         return currentAttempt;
     }
-
-    //public String getEnlapsedTime() {
-    //    return enlapsedTime;
-   // }
 
 }

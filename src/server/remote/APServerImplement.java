@@ -7,13 +7,10 @@ import shared.dto.GuessRequestDTO;
 import shared.remote.ServerInterface;
 import shared.dto.GuessResponseDTO;
 import shared.status.Color;
+import shared.status.DateTimeLog;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +31,7 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
     public APServerImplement() throws RemoteException {
         super();
         this.gameManager = new GameManager(newSecretWord ->{
-            System.out.println("[\u001B[34m" + LocalTime.now() + "\u001B[0m] " +
+            System.out.println("[\u001B[34m" + DateTimeLog.dateTimeNow() + "\u001B[0m] " +
                     "[" + Config.SERVER_NAME + "] A palavra secreta atual é: " + newSecretWord);
         });
     }
@@ -47,7 +44,8 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
      */
     @Override
     public void registerUser(Client client) throws RemoteException {
-        System.out.println("Registering online player: " + client.getName() + " UUID[" + client.getUuid() + "]");
+        System.out.println("[" + DateTimeLog.dateTimeNow()+ "] [" + Config.SERVER_NAME + "] " +
+                "Registering online player: " + client.getName() + " UUID[" + client.getUuid() + "]");
 
         // Antes de adicionar tem que testar se ele já não está registrado.
         clients.add(client);
@@ -60,7 +58,7 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
 
         String guessWord = guessRequestDTO.getGuess().toUpperCase();
 
-        System.out.printf("[" + Color.GREEN + LocalTime.now() + Color.RESET + "] Analysing attempt from player [UUID: %s]%n",
+        System.out.printf("[" + Color.GREEN + DateTimeLog.dateTimeNow() + Color.RESET + "] Analysing attempt from player [UUID: %s]%n",
                 guessRequestDTO.getUuid());
 
         /**
@@ -100,7 +98,7 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
                 }
             }
         }
-        System.out.println("[" + Color.GREEN + LocalTime.now() + Color.RESET + "] Result from player [UUID: " + guessRequestDTO.getUuid() + "] STATUS: " + Arrays.toString(status));
+        System.out.println("[" + Color.GREEN + DateTimeLog.dateTimeNow() + Color.RESET + "] Result from player [UUID: " + guessRequestDTO.getUuid() + "] STATUS: " + Arrays.toString(status));
 
         boolean wordMatch;
         wordMatch = Arrays.stream(status).allMatch(v -> v == 2);

@@ -16,6 +16,9 @@ import java.util.UUID;
 
 /**
  *
+ * Classe com as regras de negócio para a parte do jogador.
+ *
+ *
  * @author Bruna Brito Muniz Filgueiras
  * @author Laís de Assis Doria da Silva
  * @author Sérgio Lopes Júnior
@@ -114,7 +117,7 @@ public class Client implements Serializable {
             } else if (response.getStatus()[i] == 2) {
                 sb.append(Color.BG_GREEN).append(response.getGuess().charAt(i)).append(Color.RESET);
             }
-            sb.append(" ");
+//            sb.append(" ");
         }
         System.out.println("< " + sb + " >");
         System.out.println("-------------------------------------");

@@ -3,6 +3,7 @@ package server;
 import server.remote.APServerImplement;
 import shared.config.Config;
 import shared.status.Color;
+import shared.status.DateTimeLog;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -26,17 +27,22 @@ public class MainServer {
             Registry registry = LocateRegistry.createRegistry(Config.SERVER_PORT);
             registry.rebind(Config.SERVER_NAME, serviceMsgSrv);
 
+            shutdown(serviceMsgSrv);
 
-            /* Rotina de shutdown em cascata para evitar que a thread de WordScheduler continue rodando após o desligamento*/
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                System.out.println("[ServerName: " + Config.SERVER_NAME +
-                        "] Sinal de encerramento recebido. Iniciando desligamento seguro...");
-                serviceMsgSrv.shutdown();
-                System.out.println("[" + Color.RED + "ServerName: " + Config.SERVER_NAME +
-                        Color.RESET + "] Servidor encerrado com sucesso!");
-            }));
         }catch (Exception e ){
-            System.out.println("Erro ao inicializar o Servidor RMI: " + e.getMessage());
+            System.out.println("[" + Color.RED + DateTimeLog.dateTimeNow() + Color.RESET +
+                    "] Erro ao inicializar o Servidor RMI: " + e.getMessage());
         }
+    }
+
+    /* Rotina de shutdown em cascata para evitar que a thread de WordScheduler continue rodando após o desligamento*/
+    private static void shutdown(APServerImplement serviceMsgSrv){
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("[" + Color.RED + "ServerName: " + Config.SERVER_NAME +
+                    Color.RESET + "] Sinal de encerramento recebido. Iniciando desligamento seguro...");
+            serviceMsgSrv.shutdown();
+            System.out.println("[" + Color.RED + "ServerName: " + Config.SERVER_NAME +
+                    Color.RESET + "] Servidor encerrado com sucesso!");
+        }));
     }
 }

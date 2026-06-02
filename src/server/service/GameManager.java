@@ -1,6 +1,7 @@
 package server.service;
 
 import shared.config.Config;
+import shared.status.Color;
 
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicReference;
@@ -8,6 +9,13 @@ import java.util.function.Consumer;
 
 /**
  * GameManager gerencia e instancia as classes necessárias para o servidor RMI.
+ *
+ *  * @author Bruna Brito Muniz Filgueiras
+ *  * @author Laís de Assis Doria da Silva
+ *  * @author Sérgio Lopes Júnior
+ *  *
+ *  * @version 1.0
+ *
  */
 public class GameManager {
     //Cria uma classe cronograma para agendar a mudança das palavras por intervalo de tempo
@@ -33,7 +41,7 @@ public class GameManager {
         if(onWordChanged != null) {
             onWordChanged.accept(secretWord.get());
         }
-        scheduler.startSecretWordMonitor(this::updateSecretWord);
+        scheduler.startSecretWordMonitor(this::updateSecretWord); //inicia o monitor de tempo para a troca da palavra
     }
 
     /**
@@ -54,7 +62,10 @@ public class GameManager {
         String word = dictionary.getWord(wordIndex);
         this.secretWord.set(word);
 
-        //Teste utilizado para verificar se a palavra é uma String e atualizar a palavra no console do servidor
+        /* Teste utilizado para verificar se a palavra é uma String e atualizar a palavra no console do servidor com
+          base na classe Consumer<String> inserida no construtor da GameManager e no construtor da APServerImplement com as
+          instruções de como atualizar o console do servidor.
+         */
         if(onWordChanged != null){
             this.onWordChanged.accept(word);
         }
@@ -64,11 +75,12 @@ public class GameManager {
         return secretWord;
     }
 
+    /** Método em cascata para desligar a thread do scheduler. Esse método é acionado pela classe MainServer */
     public void shutdown() {
         if(scheduler !=null){
             scheduler.shutdown();
-            System.out.println("[ServerName: " + Config.SERVER_NAME + "] " +
-                    "Encerrando controle de atualização da palavra secreta...");
+            System.out.println("[" + Color.RED + "ServerName: " + Config.SERVER_NAME + "] " +
+                    Color.RESET + "Encerrando controle de atualização da palavra secreta...");
         }
     }
 }
