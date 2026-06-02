@@ -20,27 +20,34 @@ import java.rmi.registry.Registry;
 public class MainServer {
 
     public static void main(String[] args) {
+        APServerImplement serviceMsgSrv = null;
         try{
             System.out.println("Servidor RMI \n[ServerName: " + Config.SERVER_NAME + "] " +
                     "[port:" + Config.SERVER_PORT + "] online...");
-            APServerImplement serviceMsgSrv = new APServerImplement();
+            serviceMsgSrv = new APServerImplement();
             Registry registry = LocateRegistry.createRegistry(Config.SERVER_PORT);
             registry.rebind(Config.SERVER_NAME, serviceMsgSrv);
 
-            shutdown(serviceMsgSrv);
+            registerShutdownHook(serviceMsgSrv);
 
         }catch (Exception e ){
             System.out.println("[" + Color.RED + DateTimeLog.dateTimeNow() + Color.RESET +
                     "] Erro ao inicializar o Servidor RMI: " + e.getMessage());
+            if(serviceMsgSrv != null){
+                serviceMsgSrv.shutdown();
+            }
+            System.exit(1); // System.exit(1) indica ao Sistema Operacional que o programa terminou com erro
         }
     }
 
     /* Rotina de shutdown em cascata para evitar que a thread de WordScheduler continue rodando após o desligamento*/
-    private static void shutdown(APServerImplement serviceMsgSrv){
+    private static void registerShutdownHook(APServerImplement serviceMsgSrv) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.println("[" + Color.RED + "ServerName: " + Config.SERVER_NAME +
                     Color.RESET + "] Sinal de encerramento recebido. Iniciando desligamento seguro...");
-            serviceMsgSrv.shutdown();
+            if(serviceMsgSrv != null){
+                serviceMsgSrv.shutdown(); // Para a thread do WordScheduler
+            }
             System.out.println("[" + Color.RED + "ServerName: " + Config.SERVER_NAME +
                     Color.RESET + "] Servidor encerrado com sucesso!");
         }));
