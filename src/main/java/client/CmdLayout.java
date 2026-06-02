@@ -82,6 +82,7 @@ public class CmdLayout {
         System.out.println(Color.BOLD + "📖 REGRAS DO JOGO:" + Color.RESET);
         System.out.println("1. Você tem " + maxAttempts + " tentativas para descobrir a palavra secreta.");
         System.out.println("2. A palavra sempre terá " + wordLength + " letras.");
-        System.out.println("3. Digite palavras válidas e aguarde a validação do servidor.\n");
+        System.out.println("3. Digite palavras válidas e aguarde a validação do servidor.");
+        System.out.println("4. As palavra acentuadas serão processadas sem acentos\n");
     }
 }

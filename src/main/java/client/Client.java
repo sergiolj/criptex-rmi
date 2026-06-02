@@ -1,5 +1,5 @@
 package client;
-import server.GameSession;
+import server.service.GameSession;
 import server.engine.Word;
 import shared.status.Color;
 import shared.config.Config;
@@ -75,6 +75,7 @@ public class Client implements Serializable {
     //Deve ter um for usando a classe GameSession ou seja, usando o atributo attempt e maxattempt
     public boolean verifyGuess(String guess) throws RemoteException {
         Word word = new Word();
+        guess = word.removeAccent(guess);
 
         if (!gameSession.hasAttempts()) {
             System.out.println("Você não possui mais tentativas.");
@@ -108,7 +109,7 @@ public class Client implements Serializable {
 
     public void formatResponse(GuessResponseDTO response) {
         StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             if (response.getStatus()[i] == 0) {
                 sb.append(Color.BG_GRAY).append(response.getGuess().charAt(i)).append(Color.RESET);
             } else if (response.getStatus()[i] == 1) {
@@ -117,14 +118,10 @@ public class Client implements Serializable {
             } else if (response.getStatus()[i] == 2) {
                 sb.append(Color.BG_GREEN).append(response.getGuess().charAt(i)).append(Color.RESET);
             }
-//            sb.append(" ");
         }
-        System.out.println("< " + sb + " >");
+
         System.out.println("-------------------------------------");
-        System.out.printf(
-                "Tentativa: %d/5%n",
-                response.getCurrentAttempt()
-        );
+        System.out.println("              < " + sb + " >");
         System.out.println("-------------------------------------");
     }
 

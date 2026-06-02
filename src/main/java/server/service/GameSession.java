@@ -1,4 +1,4 @@
-package server;
+package server.service;
 
 import java.io.Serializable;
 
@@ -15,7 +15,7 @@ import java.io.Serializable;
  */
 public class GameSession implements Serializable {
     private int attempt = 0;
-    private final int maxAttempts = 5;
+    private final int maxAttempts = 6;
 
     public void increaseAttempt() {
         attempt++;

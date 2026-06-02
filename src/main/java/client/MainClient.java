@@ -31,7 +31,7 @@ public class MainClient {
         CmdLayout.printRules(MAX_ATTEMPTS, WORD_LENGTH);
 
         try{
-            System.out.print("Digite o nome do jogador ou <ENTER>:");
+            System.out.print("Digite o nome do jogador ou <ENTER>: ");
             name = sc.nextLine().trim();
 
             if(name.isEmpty()){
@@ -49,14 +49,12 @@ public class MainClient {
 
                 String guess = sc.nextLine();
                 if(word.validate(guess)){
-
                     currentAttempt++;
                     wordMatch = client.verifyGuess(guess);
                 }else{
                     System.out.println("Palpite inválido, palavra não reconhecida ou com menos de 5 caracteres.");
                 }
             }
-
 
         if (wordMatch) {
             System.out.println(Color.GREEN + Color.BOLD +
@@ -70,5 +68,6 @@ public class MainClient {
             System.out.println(Color.RED + "\nServidor RMI: " + Config.SERVER_NAME +
                     " não encontrado no endereço " + Config.IP_ADDRESS + "\n" + e.getMessage());
         }
+        sc.close();
    }
 }

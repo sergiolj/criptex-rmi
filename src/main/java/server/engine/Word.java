@@ -3,6 +3,8 @@ package server.engine;
 import server.service.Dictionary;
 
 import java.io.Serializable;
+import java.text.Normalizer;
+import java.util.regex.Pattern;
 
 /**
  * Classe de validação de palavras. Deve conter métodos para validar o tamanho da palavra enviada pelo
@@ -34,8 +36,14 @@ public class Word implements Serializable {
 
     private boolean wordExists(String word) {
         Dictionary dictionary = Dictionary.getInstance();
-        String verifyWord = dictionary.removeAccentFromWord(word);
+        String verifyWord = removeAccent(word);
 
         return dictionary.wordExists(verifyWord.trim().toUpperCase());
+    }
+
+    public String removeAccent(String word) {
+        String normalizedWord = Normalizer.normalize(word, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(normalizedWord).replaceAll("");
     }
 }

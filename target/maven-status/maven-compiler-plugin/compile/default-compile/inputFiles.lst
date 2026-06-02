@@ -1,0 +1,16 @@
+/home/sergiolj/Documents/SistemasDistribuidos/adivinhaPalavra/src/main/java/server/engine/Word.java
+/home/sergiolj/Documents/SistemasDistribuidos/adivinhaPalavra/src/main/java/server/service/WordScheduler.java
+/home/sergiolj/Documents/SistemasDistribuidos/adivinhaPalavra/src/main/java/shared/config/Config.java
+/home/sergiolj/Documents/SistemasDistribuidos/adivinhaPalavra/src/main/java/shared/dto/GuessRequestDTO.java
+/home/sergiolj/Documents/SistemasDistribuidos/adivinhaPalavra/src/main/java/server/service/GameSession.java
+/home/sergiolj/Documents/SistemasDistribuidos/adivinhaPalavra/src/main/java/server/remote/APServerImplement.java
+/home/sergiolj/Documents/SistemasDistribuidos/adivinhaPalavra/src/main/java/shared/status/DateTimeLog.java
+/home/sergiolj/Documents/SistemasDistribuidos/adivinhaPalavra/src/main/java/server/service/Dictionary.java
+/home/sergiolj/Documents/SistemasDistribuidos/adivinhaPalavra/src/main/java/shared/status/Color.java
+/home/sergiolj/Documents/SistemasDistribuidos/adivinhaPalavra/src/main/java/client/Client.java
+/home/sergiolj/Documents/SistemasDistribuidos/adivinhaPalavra/src/main/java/client/MainClient.java
+/home/sergiolj/Documents/SistemasDistribuidos/adivinhaPalavra/src/main/java/server/MainServer.java
+/home/sergiolj/Documents/SistemasDistribuidos/adivinhaPalavra/src/main/java/shared/dto/GuessResponseDTO.java
+/home/sergiolj/Documents/SistemasDistribuidos/adivinhaPalavra/src/main/java/client/CmdLayout.java
+/home/sergiolj/Documents/SistemasDistribuidos/adivinhaPalavra/src/main/java/server/service/GameManager.java
+/home/sergiolj/Documents/SistemasDistribuidos/adivinhaPalavra/src/main/java/shared/remote/ServerInterface.java

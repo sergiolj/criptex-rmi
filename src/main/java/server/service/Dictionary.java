@@ -2,9 +2,8 @@ package server.service;
 
 import shared.status.Color;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ import java.util.regex.Pattern;
  */
 public class Dictionary {
     private static Dictionary instance;
-    private final String dictionaryPath = "resources/palavras.txt";
+    private final String dictionaryPath = "/palavras.txt";
     private final List<String> words = new ArrayList<>();
 
     /** Todas as palavras devem ter cinco letras para o estilo do jogo. */
@@ -44,26 +43,34 @@ public class Dictionary {
      * substituição do dicionário por outro ou por outra linguagem. Possibilitando ao usuário escolher o idioma que
      * deseja jogar ou até temática de palavras, por exemplo.
      */
-    private void readRawDictionary(){
-        try{
-            BufferedReader br = new BufferedReader(new FileReader(dictionaryPath));
-            String currentLine;
-            while ((currentLine = br.readLine()) != null) {
-                currentLine = currentLine.trim();
-                if (currentLine.length() == 5) {
-                    String wordModified = removeAccentFromWord(currentLine.toUpperCase());
-                    if(wordModified.matches("^[A-Z]+$")){
-                        words.add(wordModified);
+    private void readRawDictionary() {
+        /*InputStream é usado para evitar erros de acesso a arquivos em pastas usando caminhos fixos. Desta forma o
+        caminho será relativo ao recurso.*/
+        try (InputStream is = getClass().getResourceAsStream(dictionaryPath)) {
+            if (is == null) {
+                System.out.println("[" + Color.RED + "FATAL ERROR" + Color.RESET +
+                        "] Arquivo base do dicionário não foi encontrado em " + dictionaryPath);
+                return;
+            }
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+                String currentLine;
+                while ((currentLine = br.readLine()) != null) {
+                    currentLine = currentLine.trim();
+                    if (currentLine.length() == 5) {
+                        String wordModified = removeAccentFromWord(currentLine.toUpperCase());
+                        if (wordModified.matches("^[A-Z]+$")) {
+                            words.add(wordModified);
+                        }
                     }
                 }
             }
-        } catch (IOException e) {
-            System.out.println("[" + Color.RED + "FATAL ERROR" + Color.RESET +
-                    "] Erro ao acessar arquivo base do dicionário em " + dictionaryPath);
-        }
+            } catch (IOException e) {
+                System.out.println("[" + Color.RED + "FATAL ERROR" + Color.RESET +
+                        "] Erro ao ler dados no arquivo base do dicionário em " + dictionaryPath);
+            }
     }
 
-    /** Retorna a instância única do dicionário simulando um BD centralizado.
+        /** Retorna a instância única do dicionário simulando um BD centralizado.
      * Utiliza synchronized para evitar problemas de concorrência na criação da instância em ambiente
      * com múltiplos usuários simultâneos
      */
