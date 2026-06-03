@@ -44,8 +44,9 @@ public class Dictionary {
      * deseja jogar ou até temática de palavras, por exemplo.
      */
     private void readRawDictionary() {
-        /*InputStream é usado para evitar erros de acesso a arquivos em pastas usando caminhos fixos. Desta forma o
-        caminho será relativo ao recurso.*/
+        /* O método getResourceAsStream é utilizado para carregar o arquivo diretamente do classpath.
+        Isso evita erros de mapeamento ao usar caminhos absolutos do sistema operacional e garante
+        que o recurso seja acessado corretamente, mesmo quando a aplicação for empacotada. */
         try (InputStream is = getClass().getResourceAsStream(dictionaryPath)) {
             if (is == null) {
                 System.out.println("[" + Color.RED + "FATAL ERROR" + Color.RESET +

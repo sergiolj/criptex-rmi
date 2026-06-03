@@ -45,6 +45,6 @@ public class WordScheduler {
     }
 
     public void shutdown() {
-        scheduler.shutdown();
+        scheduler.shutdown(); //Finaliza o ScheduledExecutorService usando o método da classe.
     }
 }
