@@ -1,6 +1,6 @@
 package server;
 
-import server.remote.APServerImplement;
+import server.remote.CriptexSrvImplement;
 import shared.config.Config;
 import shared.status.Color;
 import shared.status.DateTimeLog;
@@ -20,11 +20,11 @@ import java.rmi.registry.Registry;
 public class MainServer {
 
     public static void main(String[] args) {
-        APServerImplement criptexService = null;
+        CriptexSrvImplement criptexService = null;
         try{
             System.out.println("Servidor RMI \n[ServerName: " + Config.SERVER_NAME + "] " +
                     "[port:" + Config.SERVER_PORT + "] online...");
-            criptexService = new APServerImplement();
+            criptexService = new CriptexSrvImplement();
             Registry registry = LocateRegistry.createRegistry(Config.SERVER_PORT);
             registry.rebind(Config.SERVER_NAME, criptexService);
 
@@ -41,7 +41,7 @@ public class MainServer {
     }
 
     /* Rotina de shutdown em cascata para evitar que a thread de WordScheduler continue rodando após o desligamento*/
-    private static void registerShutdownHook(APServerImplement service) {
+    private static void registerShutdownHook(CriptexSrvImplement service) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.println("[" + Color.RED + "ServerName: " + Config.SERVER_NAME +
                     Color.RESET + "] Sinal de encerramento recebido. Iniciando desligamento seguro...");

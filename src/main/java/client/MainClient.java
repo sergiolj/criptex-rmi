@@ -65,8 +65,10 @@ public class MainClient {
         }
 
         } catch (RemoteException e) {
+            sc.close();
             System.out.println(Color.RED + "\nServidor RMI: " + Config.SERVER_NAME +
-                    " não encontrado no endereço " + Config.IP_ADDRESS + "\n" + e.getMessage());
+                    " não encontrado no endereço " + Config.IP_ADDRESS + "\nVerifique se o servidor foi iniciado " +
+                    "corretamente.");
         }
         sc.close();
    }

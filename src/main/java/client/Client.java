@@ -26,37 +26,24 @@ import java.util.UUID;
  * @version 1.0
  */
 public class Client implements Serializable {
-    private final Registry registry;
     private final ServerInterface proxy;
-    private int index = 0;
-
     private int score = 0;
-    private int attempt = 0;
     private final GameSession gameSession;
+
     /** Parâmetro que cria um identificador único para o jogador (UUID Universally Unique Identifier) */
     private final UUID uuid;
-    private String name = "Anonymous";
+    private final String name;
 
      public Client() throws RemoteException {
-        try {
-            this.uuid = UUID.randomUUID();
-            this.gameSession = new GameSession();
-
-            this.registry = LocateRegistry.getRegistry(Config.IP_ADDRESS, Config.SERVER_PORT);
-            this.proxy = (ServerInterface) this.registry.lookup(Config.SERVER_NAME);
-
-            this.proxy.registerUser(this);
-
-        } catch (NotBoundException e) {
-            throw new RuntimeException(e);
-        }
+         this("Anonymous");
     }
+
     public Client(String name) throws RemoteException {
         try {
             this.uuid = UUID.randomUUID();
             this.name = name;
-            this.registry = LocateRegistry.getRegistry(Config.IP_ADDRESS, Config.SERVER_PORT);
-            this.proxy = (ServerInterface) this.registry.lookup(Config.SERVER_NAME);
+            Registry registry = LocateRegistry.getRegistry(Config.IP_ADDRESS, Config.SERVER_PORT);
+            this.proxy = (ServerInterface) registry.lookup(Config.SERVER_NAME);
             this.proxy.registerUser(this);
             this.gameSession = new GameSession();
 
@@ -64,7 +51,6 @@ public class Client implements Serializable {
             throw new RuntimeException(e);
         }
     }
-
 
     /**
      *
@@ -128,16 +114,9 @@ public class Client implements Serializable {
     public GameSession getGameSession() {
         return gameSession;
     }
-    public void increaseAttempt() {
-        this.attempt++;
-    }
 
     public int getAttempts() {
         return gameSession.getAttempt();
-    }
-
-    public int getIndex() {
-        return index;
     }
 
     public int getScore() {

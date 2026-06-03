@@ -27,11 +27,11 @@ import java.util.List;
  *
  * @version 1.0
  */
-public class APServerImplement extends UnicastRemoteObject implements ServerInterface {
+public class CriptexSrvImplement extends UnicastRemoteObject implements ServerInterface {
     private final List<Client> clients = new ArrayList<>();
     private final GameManager gameManager;
 
-    public APServerImplement() throws RemoteException {
+    public CriptexSrvImplement() throws RemoteException {
         super();
         this.gameManager = new GameManager(newSecretWord ->{
             System.out.println("[\u001B[34m" + DateTimeLog.dateTimeNow() + "\u001B[0m] " +
