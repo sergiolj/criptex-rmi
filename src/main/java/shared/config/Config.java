@@ -14,7 +14,7 @@ package shared.config;
  */
 public class Config {
     /** Nome único do serviço registrado no RMI Registry. */
-    public static final String SERVER_NAME ="CRIPTEX RMI";
+    public static final String SERVER_NAME ="CRIPTEX_RMI";
 
     /** Porta padrão usada para o registro RMI. */
     public static final Integer SERVER_PORT =1099;

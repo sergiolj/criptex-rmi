@@ -9,6 +9,9 @@ import shared.dto.GuessResponseDTO;
 import shared.status.Color;
 import shared.status.DateTimeLog;
 
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
@@ -108,11 +111,18 @@ public class APServerImplement extends UnicastRemoteObject implements ServerInte
     public void shutdown() {
         gameManager.shutdown();
         try{
-            UnicastRemoteObject.unexportObject(this, true);
             System.out.println( "["+ Color.RED + "ServerName: " + Config.SERVER_NAME + Color.RESET + "] " +
-                    "Desconectando servidor RMI...");
+                "Desconectando servidor RMI...");
+
+            //Remove o nome do servidor do registro RMI
+            Naming.unbind("rmi://" + Config.IP_ADDRESS + ":" + Config.SERVER_PORT + "/" + Config.SERVER_NAME);
+
+            //Remove o objeto da infraestrutura de execução do RMI fechando a porta que recebia requisições.
+            UnicastRemoteObject.unexportObject(this, true);
         }catch (RemoteException e){
             System.out.println("Erro ao desligar servidor RMI: " + e.getMessage());
+        } catch (MalformedURLException | NotBoundException e) {
+            throw new RuntimeException(e);
         }
     }
 }
