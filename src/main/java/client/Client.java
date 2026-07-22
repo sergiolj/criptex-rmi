@@ -1,6 +1,7 @@
 package client;
 import server.service.GameSession;
 import server.engine.Word;
+import shared.remote.ClientInterface;
 import shared.status.Color;
 import shared.config.Config;
 import shared.dto.GuessRequestDTO;
@@ -25,7 +26,7 @@ import java.util.UUID;
  *
  * @version 1.0
  */
-public class Client implements Serializable {
+public class Client implements Serializable, ClientInterface {
     private final ServerInterface proxy;
     private int score = 0;
     private final GameSession gameSession;
@@ -122,11 +123,11 @@ public class Client implements Serializable {
     public int getScore() {
         return score;
     }
-
+    @Override
     public String getName() {
         return name;
     }
-
+    @Override
     public UUID getUuid() {
         return uuid;
     }

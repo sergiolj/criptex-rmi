@@ -19,7 +19,7 @@ import java.rmi.RemoteException;
 public interface ServerInterface extends Remote {
     /** Registra o usuário para que seja possível quantificar vitórias e lidar com índices de palavras
      * diferentes para cada usuário. */
-    void registerUser(Client client) throws RemoteException;
+    void registerUser(ClientInterface client) throws RemoteException;
 
     /** Verifica se a palavra enviada pelo cliente corresponde à palavra secreta. */
     GuessResponseDTO verifyGuess(GuessRequestDTO guessRequestDTO) throws RemoteException;

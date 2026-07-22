@@ -4,6 +4,7 @@ import client.Client;
 import server.service.GameManager;
 import shared.config.Config;
 import shared.dto.GuessRequestDTO;
+import shared.remote.ClientInterface;
 import shared.remote.ServerInterface;
 import shared.dto.GuessResponseDTO;
 import shared.status.Color;
@@ -28,7 +29,7 @@ import java.util.List;
  * @version 1.0
  */
 public class CriptexSrvImplement extends UnicastRemoteObject implements ServerInterface {
-    private final List<Client> clients = new ArrayList<>();
+    private final List<ClientInterface> clients = new ArrayList<>();
     private final GameManager gameManager;
 
     public CriptexSrvImplement() throws RemoteException {
@@ -46,7 +47,7 @@ public class CriptexSrvImplement extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException
      */
     @Override
-    public void registerUser(Client client) throws RemoteException {
+    public void registerUser(ClientInterface client) throws RemoteException {
         System.out.println("[" + DateTimeLog.dateTimeNow()+ "] [" + Config.SERVER_NAME + "] " +
                 "Registering online player: " + client.getName() + " UUID[" + client.getUuid() + "]");
 
