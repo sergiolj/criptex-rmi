@@ -1,6 +1,5 @@
 package shared.remote;
 
-import client.Client;
 import shared.dto.GuessRequestDTO;
 import shared.dto.GuessResponseDTO;
 
