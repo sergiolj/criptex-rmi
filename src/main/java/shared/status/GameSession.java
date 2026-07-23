@@ -1,4 +1,4 @@
-package server.service;
+package shared.status;
 
 import java.io.Serializable;
 

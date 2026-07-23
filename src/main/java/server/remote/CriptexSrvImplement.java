@@ -1,6 +1,5 @@
 package server.remote;
 
-import client.Client;
 import server.service.GameManager;
 import shared.config.Config;
 import shared.dto.GuessRequestDTO;

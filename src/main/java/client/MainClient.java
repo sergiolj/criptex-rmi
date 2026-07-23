@@ -20,7 +20,7 @@ public class MainClient {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         boolean wordMatch = false;
-        Client client;
+        Player player;
         String name;
         final int MAX_ATTEMPTS = 6;
         final int WORD_LENGTH=5;
@@ -35,9 +35,9 @@ public class MainClient {
             name = sc.nextLine().trim();
 
             if(name.isEmpty()){
-                client = new Client();
+                player = new Player();
             }else{
-                client = new Client(name);
+                player = new Player(name);
             }
 
             System.out.println(Color.YELLOW + "\n>>> Bem-vindo(a), " + name +
@@ -50,7 +50,7 @@ public class MainClient {
                 String guess = sc.nextLine();
                 if(word.validate(guess)){
                     currentAttempt++;
-                    wordMatch = client.verifyGuess(guess);
+                    wordMatch = player.verifyGuess(guess);
                 }else{
                     System.out.println("Palpite inválido, palavra não reconhecida ou com menos de 5 caracteres.");
                 }

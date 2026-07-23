@@ -1,5 +1,5 @@
 package client;
-import server.service.GameSession;
+import shared.status.GameSession;
 import server.engine.Word;
 import shared.remote.ClientInterface;
 import shared.status.Color;
@@ -8,6 +8,7 @@ import shared.dto.GuessRequestDTO;
 import shared.remote.ServerInterface;
 import shared.dto.GuessResponseDTO;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -26,7 +27,9 @@ import java.util.UUID;
  *
  * @version 1.0
  */
-public class Client implements Serializable, ClientInterface {
+public class Player implements Serializable, ClientInterface {
+    @Serial
+    private static final long serialVersionUID = 1L;
     private final ServerInterface proxy;
     private int score = 0;
     private final GameSession gameSession;
@@ -35,11 +38,11 @@ public class Client implements Serializable, ClientInterface {
     private final UUID uuid;
     private final String name;
 
-     public Client() throws RemoteException {
+     public Player() throws RemoteException {
          this("Anonymous");
     }
 
-    public Client(String name) throws RemoteException {
+    public Player(String name) throws RemoteException {
         try {
             this.uuid = UUID.randomUUID();
             this.name = name;
