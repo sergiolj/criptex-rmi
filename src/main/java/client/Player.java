@@ -1,6 +1,6 @@
 package client;
 import shared.status.GameSession;
-import server.engine.Word;
+import util.Word;
 import shared.remote.ClientInterface;
 import shared.status.Color;
 import shared.config.Config;

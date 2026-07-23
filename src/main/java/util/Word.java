@@ -1,4 +1,4 @@
-package server.engine;
+package util;
 
 import server.service.Dictionary;
 

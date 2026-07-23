@@ -1,6 +1,6 @@
 package client;
 
-import server.engine.Word;
+import util.Word;
 import shared.config.Config;
 import shared.status.Color;
 
