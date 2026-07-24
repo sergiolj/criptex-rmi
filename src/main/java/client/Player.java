@@ -4,9 +4,9 @@ import util.Word;
 import shared.remote.ClientInterface;
 import shared.status.Color;
 import shared.config.Config;
-import shared.dto.GuessRequestDTO;
+import shared.dto.GuessRequest;
 import shared.remote.ServerInterface;
-import shared.dto.GuessResponseDTO;
+import shared.dto.GuessResponse;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -48,7 +48,7 @@ public class Player implements Serializable, ClientInterface {
             this.name = name;
             Registry registry = LocateRegistry.getRegistry(Config.IP_ADDRESS, Config.SERVER_PORT);
             this.proxy = (ServerInterface) registry.lookup(Config.SERVER_NAME);
-            this.proxy.registerUser(this);
+            this.proxy.loginUser(this);
             this.gameSession = new GameSession();
 
         } catch (NotBoundException e) {
@@ -77,11 +77,11 @@ public class Player implements Serializable, ClientInterface {
             return false;
         }
 
-        GuessRequestDTO request = new GuessRequestDTO(this.uuid, guess);
-        GuessResponseDTO response = this.proxy.verifyGuess(request);
+        GuessRequest request = new GuessRequest(this.uuid, guess);
+        GuessResponse response = this.proxy.verifyGuess(request);
         gameSession.increaseAttempt();
 
-        GuessResponseDTO responseWithAttempt = new GuessResponseDTO(
+        GuessResponse responseWithAttempt = new GuessResponse(
                 response.getStatus(),
                 response.getGuess(),
                 response.isWordMatch(),
@@ -97,7 +97,7 @@ public class Player implements Serializable, ClientInterface {
         return responseWithAttempt.isWordMatch();
     }
 
-    public void formatResponse(GuessResponseDTO response) {
+    public void formatResponse(GuessResponse response) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 5; i++) {
             if (response.getStatus()[i] == 0) {

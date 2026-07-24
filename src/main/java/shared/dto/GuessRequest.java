@@ -14,14 +14,14 @@ import java.util.UUID;
  *
  * @version 1.0
  */
-public class GuessRequestDTO implements Serializable {
+public class GuessRequest implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     private final String guess;
     private final UUID uuid;
 
-    public GuessRequestDTO(UUID uuid, String guess) {
+    public GuessRequest(UUID uuid, String guess) {
         this.guess = guess;
         this.uuid = uuid;
     }

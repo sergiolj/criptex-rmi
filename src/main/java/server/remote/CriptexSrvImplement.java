@@ -2,10 +2,10 @@ package server.remote;
 
 import server.service.GameManager;
 import shared.config.Config;
-import shared.dto.GuessRequestDTO;
+import shared.dto.GuessRequest;
 import shared.remote.ClientInterface;
 import shared.remote.ServerInterface;
-import shared.dto.GuessResponseDTO;
+import shared.dto.GuessResponse;
 import shared.status.Color;
 import shared.status.DateTimeLog;
 import util.Word;
@@ -47,25 +47,34 @@ public class CriptexSrvImplement extends UnicastRemoteObject implements ServerIn
      * @throws RemoteException
      */
     @Override
-    public void registerUser(ClientInterface client) throws RemoteException {
+    public void loginUser(ClientInterface client) throws RemoteException {
         System.out.println("[" + DateTimeLog.dateTimeNow()+ "] [" + Config.SERVER_NAME + "] " +
-                "Registering online player: " + client.getName() + " UUID[" + client.getUuid() + "]");
+                "Login player: " + client.getName() + " UUID[" + client.getUuid() + "]");
 
         // Antes de adicionar tem que testar se ele já não está registrado.
         clients.add(client);
     }
 
+    @Override
+    public void logoutUser(ClientInterface client) throws RemoteException {
+        System.out.println("[" + DateTimeLog.dateTimeNow()+ "] [" + Config.SERVER_NAME + "] " +
+                "Logout player: " + client.getName() + " UUID[" + client.getUuid() + "]");
+        clients.removeIf(c -> {
+            return c.getUuid().equals(client.getUuid());
+        });
+    }
+
 
     @Override
-    public GuessResponseDTO verifyGuess(GuessRequestDTO guessRequestDTO) throws RemoteException {
+    public GuessResponse verifyGuess(GuessRequest guessRequest) throws RemoteException {
         String secretWord = gameManager.getSecretWord().toString();
 
-        String wordAttempt = guessRequestDTO.getGuess().toUpperCase();
+        String wordAttempt = guessRequest.getGuess().toUpperCase();
         Word validator = new Word();
 
         if(validator.validate(wordAttempt)){
             System.out.printf("[" + Color.GREEN + DateTimeLog.dateTimeNow() + Color.RESET + "] Analysing attempt from player [UUID: %s]%n",
-                    guessRequestDTO.getUuid());
+                    guessRequest.getUuid());
 
             /**
              * Array que irá receber os valores verificados para as letras da palavra do palpite do jogador:
@@ -105,11 +114,11 @@ public class CriptexSrvImplement extends UnicastRemoteObject implements ServerIn
                 }
             }
             System.out.println("[" + Color.GREEN + DateTimeLog.dateTimeNow() + Color.RESET + "] " +
-                    "Result from player [UUID: " + guessRequestDTO.getUuid() + "] STATUS: " + Arrays.toString(status));
+                    "Result from player [UUID: " + guessRequest.getUuid() + "] STATUS: " + Arrays.toString(status));
 
             boolean wordMatch;
             wordMatch = Arrays.stream(status).allMatch(v -> v == 2);
-            return new GuessResponseDTO(status, wordAttempt, wordMatch);
+            return new GuessResponse(status, wordAttempt, wordMatch);
         }
         return null;
     }

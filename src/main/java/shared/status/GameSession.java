@@ -1,5 +1,6 @@
 package shared.status;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 
@@ -14,8 +15,9 @@ import java.io.Serializable;
  * @version 1.0
  */
 public class GameSession implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     private int attempt = 0;
-    private final int maxAttempts = 6;
 
     public void increaseAttempt() {
         attempt++;
@@ -25,11 +27,8 @@ public class GameSession implements Serializable {
         return attempt;
     }
 
-    public int getMaxAttempts() {
-        return maxAttempts;
-    }
-
     public boolean hasAttempts() {
+        int maxAttempts = 6;
         return attempt < maxAttempts;
     }
 }

@@ -14,7 +14,7 @@ import java.io.Serializable;
  *
  * @version 1.0
  */
-public class GuessResponseDTO implements Serializable {
+public class GuessResponse implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -27,7 +27,7 @@ public class GuessResponseDTO implements Serializable {
     // Talvez possa ser implementada na classe GameSession*/
     //private final String enlapsedTime;
 
-    public GuessResponseDTO(int[] status, String guess, boolean wordMatch) {
+    public GuessResponse(int[] status, String guess, boolean wordMatch) {
         this.status = status;
         this.guess = guess;
         this.wordMatch = wordMatch;
@@ -35,7 +35,7 @@ public class GuessResponseDTO implements Serializable {
         //this.enlapsedTime = "0";
     }
 
-    public GuessResponseDTO(int[] status, String guess, boolean wordMatch, int currentAttempt) {
+    public GuessResponse(int[] status, String guess, boolean wordMatch, int currentAttempt) {
         this.currentAttempt = currentAttempt;
         //this.enlapsedTime = "0";
         this.status = status;
