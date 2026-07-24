@@ -1,4 +1,4 @@
-package client;
+package model;
 import network.GameSession;
 import util.Word;
 import shared.remote.ClientInterface;

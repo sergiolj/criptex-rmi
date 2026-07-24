@@ -1,4 +1,4 @@
-package client;
+package model;
 
 import util.Word;
 import shared.config.Config;
