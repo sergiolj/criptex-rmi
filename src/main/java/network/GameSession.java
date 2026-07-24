@@ -1,4 +1,4 @@
-package shared.status;
+package network;
 
 import java.io.Serial;
 import java.io.Serializable;

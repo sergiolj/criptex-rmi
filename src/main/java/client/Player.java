@@ -1,5 +1,5 @@
 package client;
-import shared.status.GameSession;
+import network.GameSession;
 import util.Word;
 import shared.remote.ClientInterface;
 import shared.status.Color;
