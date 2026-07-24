@@ -1,4 +1,4 @@
-package network;
+package rmi.network;
 
 import java.io.Serial;
 import java.io.Serializable;

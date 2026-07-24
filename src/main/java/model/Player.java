@@ -1,5 +1,5 @@
 package model;
-import network.GameSession;
+import rmi.network.GameSession;
 import util.Word;
 import shared.remote.ClientInterface;
 import shared.status.Color;
