@@ -1,6 +1,7 @@
 package server.remote;
 
 import server.service.GameManager;
+import shared.remote.Ranking;
 import shared.config.Config;
 import shared.dto.GuessRequest;
 import shared.remote.ClientInterface;
@@ -16,9 +17,9 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
 
 /**
  *
@@ -29,7 +30,10 @@ import java.util.List;
  * @version 1.0
  */
 public class CriptexSrvImplement extends UnicastRemoteObject implements ServerInterface {
-    private final List<ClientInterface> clients = new ArrayList<>();
+    private final Map<UUID, ClientInterface> clients = new HashMap<>();
+    private final Map<UUID, Instant> loginSession = new HashMap<>();
+
+    private final List<Ranking> ranking = new ArrayList<>();
     private final GameManager gameManager;
 
     public CriptexSrvImplement() throws RemoteException {
@@ -38,6 +42,7 @@ public class CriptexSrvImplement extends UnicastRemoteObject implements ServerIn
             System.out.println("[\u001B[34m" + DateTimeLog.dateTimeNow() + "\u001B[0m] " +
                     "[" + Config.SERVER_NAME + "] A palavra secreta atual é: " + newSecretWord);
         });
+        resetRanking();
     }
 
     /**
@@ -52,29 +57,29 @@ public class CriptexSrvImplement extends UnicastRemoteObject implements ServerIn
                 "Login player: " + client.getName() + " UUID[" + client.getUuid() + "]");
 
         // Antes de adicionar tem que testar se ele já não está registrado.
-        clients.add(client);
+        clients.put(client.getUuid(),client);
+        loginSession.put(client.getUuid(), Instant.now());
     }
 
     @Override
     public void logoutUser(ClientInterface client) throws RemoteException {
         System.out.println("[" + DateTimeLog.dateTimeNow()+ "] [" + Config.SERVER_NAME + "] " +
                 "Logout player: " + client.getName() + " UUID[" + client.getUuid() + "]");
-        clients.removeIf(c -> {
-            return c.getUuid().equals(client.getUuid());
-        });
+        clients.remove(client.getUuid());
+        loginSession.remove(client.getUuid());
     }
 
 
     @Override
-    public GuessResponse verifyGuess(GuessRequest guessRequest) throws RemoteException {
+    public GuessResponse verifyGuess(GuessRequest request) throws RemoteException {
         String secretWord = gameManager.getSecretWord().toString();
 
-        String wordAttempt = guessRequest.getGuess().toUpperCase();
+        String wordAttempt = request.getGuess().toUpperCase();
         Word validator = new Word();
 
         if(validator.validate(wordAttempt)){
             System.out.printf("[" + Color.GREEN + DateTimeLog.dateTimeNow() + Color.RESET + "] Analysing attempt from player [UUID: %s]%n",
-                    guessRequest.getUuid());
+                    request.getUuid());
 
             /**
              * Array que irá receber os valores verificados para as letras da palavra do palpite do jogador:
@@ -114,13 +119,22 @@ public class CriptexSrvImplement extends UnicastRemoteObject implements ServerIn
                 }
             }
             System.out.println("[" + Color.GREEN + DateTimeLog.dateTimeNow() + Color.RESET + "] " +
-                    "Result from player [UUID: " + guessRequest.getUuid() + "] STATUS: " + Arrays.toString(status));
+                    "Result from player [UUID: " + request.getUuid() + "] STATUS: " + Arrays.toString(status));
 
             boolean wordMatch;
             wordMatch = Arrays.stream(status).allMatch(v -> v == 2);
+            if(wordMatch){
+                registerWinner(request.getUuid(), Instant.now());
+            }
+
             return new GuessResponse(status, wordAttempt, wordMatch);
         }
         return null;
+    }
+
+    @Override
+    public List<Ranking> getRanking() throws RemoteException{
+        return this.ranking;
     }
 
     public void shutdown() {
@@ -140,4 +154,24 @@ public class CriptexSrvImplement extends UnicastRemoteObject implements ServerIn
             throw new RuntimeException(e);
         }
     }
+
+    private void registerWinner(UUID playerUUID, Instant currentTime){
+        Duration elapsedTime = Duration.between(loginSession.get(playerUUID), currentTime);
+        ClientInterface player = clients.get(playerUUID);
+
+        String name = (player != null) ? player.getName() : "Jogador não encontrado";
+
+        ranking.add(new Ranking(name,elapsedTime));
+        ranking.sort(Comparator.comparing(Ranking::duration));
+        System.out.println(ranking);
+    }
+
+    private void resetRanking(){
+        Duration duration;
+        for(int i = 0; i<10; i++){
+            duration = Duration.ofSeconds(i+60);
+            ranking.add(new Ranking("AAA", duration));
+        }
+    }
+
 }
