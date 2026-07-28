@@ -1,6 +1,7 @@
 package server.remote;
 
 import server.service.GameManager;
+import server.service.WordScheduler;
 import shared.remote.Ranking;
 import shared.config.Config;
 import shared.dto.GuessRequest;
@@ -42,6 +43,9 @@ public class CriptexSrvImplement extends UnicastRemoteObject implements ServerIn
             System.out.println("[\u001B[34m" + DateTimeLog.dateTimeNow() + "\u001B[0m] " +
                     "[" + Config.SERVER_NAME + "] A palavra secreta atual é: " + newSecretWord);
         });
+        System.out.println("[\u001B[34m"  + DateTimeLog.dateTimeNow() + "\u001B[0m] " +
+                    "[" + Config.SERVER_NAME + "] Próxima palavra em " +
+                    gameManager.getTimeInterval() /60  + " minutos");
         resetRanking();
     }
 
@@ -168,8 +172,8 @@ public class CriptexSrvImplement extends UnicastRemoteObject implements ServerIn
 
     private void resetRanking(){
         Duration duration;
-        for(int i = 0; i<10; i++){
-            duration = Duration.ofSeconds(i+60);
+        for(int i = 1; i<11; i++){
+            duration = Duration.ofMinutes(i);
             ranking.add(new Ranking("AAA", duration));
         }
     }

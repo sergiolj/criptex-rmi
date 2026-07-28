@@ -83,4 +83,8 @@ public class GameManager {
                     Color.RESET + "Encerrando controle de atualização da palavra secreta...");
         }
     }
+
+    public Long getTimeInterval(){
+        return this.scheduler.getTIME_INTERVAL();
+    }
 }

@@ -4,6 +4,12 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.Duration;
 
+/**
+ *
+ * @author Sérgio Lopes Júnior
+ *
+ * @version 1.0
+ */
 public record Ranking(String name, Duration duration) implements Serializable {
 
     @Serial
