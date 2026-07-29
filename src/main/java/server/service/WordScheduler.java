@@ -18,7 +18,7 @@ public class WordScheduler {
     private final Instant startTime;
 
     /** Atributo que define em segundos o tempo para a troca da palavra secreta.*/
-    private static final long TIME_INTERVAL = 900;
+    private static final long TIME_INTERVAL = 1800;
 
     /** Interface que cria um serviço gerenciador de threads (Pool de serviços)
      *  para executar uma tarefa com base em um intervalo de tempo.*/

@@ -167,7 +167,6 @@ public class CriptexSrvImplement extends UnicastRemoteObject implements ServerIn
 
         ranking.add(new Ranking(name,elapsedTime));
         ranking.sort(Comparator.comparing(Ranking::duration));
-        System.out.println(ranking);
     }
 
     private void resetRanking(){
