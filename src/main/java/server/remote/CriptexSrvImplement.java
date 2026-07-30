@@ -24,11 +24,9 @@ import java.util.*;
 
 /**
  *
- * @author Bruna Brito Muniz Filgueiras
- * @author Laís de Assis Doria da Silva
  * @author Sérgio Lopes Júnior
  *
- * @version 1.0
+ * @version 2.0
  */
 public class CriptexSrvImplement extends UnicastRemoteObject implements ServerInterface {
     private final Map<UUID, ClientInterface> clients = new HashMap<>();
