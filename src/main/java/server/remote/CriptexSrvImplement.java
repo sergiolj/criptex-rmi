@@ -35,18 +35,40 @@ public class CriptexSrvImplement extends UnicastRemoteObject implements ServerIn
     private final Map<UUID, Instant> loginSession = new HashMap<>();
 
     private final List<Ranking> ranking = new ArrayList<>();
-    private final GameManager gameManager;
+    private GameManager gameManager;
 
-    public CriptexSrvImplement() throws RemoteException {
+    private boolean demoMode = false;
+
+    public CriptexSrvImplement(String[] args) throws RemoteException {
         super();
-        this.gameManager = new GameManager(newSecretWord ->{
-            System.out.println("[\u001B[34m" + DateTimeLog.dateTimeNow() + "\u001B[0m] " +
-                    "[" + Config.SERVER_NAME + "] A palavra secreta atual é: " + newSecretWord);
-        });
-        System.out.println("[\u001B[34m"  + DateTimeLog.dateTimeNow() + "\u001B[0m] " +
+        setConfigArgs(args);
+        if (demoMode) {
+            this.gameManager = new GameManager(newSecretWord -> {
+                System.out.println("\u001B[34m[" + DateTimeLog.dateTimeNow() + "]\u001B[0m " +
+                        "[" + Config.SERVER_NAME + "] A palavra secreta atual é: " + newSecretWord);
+            });
+            System.out.println("\u001B[35m[" + DateTimeLog.dateTimeNow() + "]\u001B[0m " +
+                    "[" + Config.SERVER_NAME + "] DEMO MODE - Próxima palavra somente em caso de palavra desvendada.");
+            resetRanking();
+        } else {
+            this.gameManager = new GameManager(newSecretWord -> {
+                System.out.println("[\u001B[34m" + DateTimeLog.dateTimeNow() + "]\u001B[0m " +
+                        "[" + Config.SERVER_NAME + "] A palavra secreta atual é: " + newSecretWord);
+            });
+            System.out.println("[\u001B[34m" + DateTimeLog.dateTimeNow() + "]\u001B[0m " +
                     "[" + Config.SERVER_NAME + "] Próxima palavra em " +
-                    gameManager.getTimeInterval() /60  + " minutos");
-        resetRanking();
+                    gameManager.getTimeInterval() / 60 + " minutos");
+            gameManager.getScheduler().startSecretWordMonitor(gameManager::updateSecretWord);
+            resetRanking();
+        }
+    }
+
+    private void setConfigArgs(String[] args) {
+        if(args.length != 0){
+            if(args[0].equalsIgnoreCase("d")){
+                demoMode = true;
+            }
+        }
     }
 
     /**
@@ -129,6 +151,7 @@ public class CriptexSrvImplement extends UnicastRemoteObject implements ServerIn
             wordMatch = Arrays.stream(status).allMatch(v -> v == 2);
             if(wordMatch){
                 registerWinner(request.getUuid(), Instant.now());
+                if (demoMode) gameManager.updateSecretWordDemoMode();
             }
 
             return new GuessResponse(status, wordAttempt, wordMatch);
@@ -167,6 +190,7 @@ public class CriptexSrvImplement extends UnicastRemoteObject implements ServerIn
 
         ranking.add(new Ranking(name,elapsedTime));
         ranking.sort(Comparator.comparing(Ranking::duration));
+
     }
 
     private void resetRanking(){

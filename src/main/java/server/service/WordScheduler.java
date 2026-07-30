@@ -18,7 +18,7 @@ public class WordScheduler {
     private final Instant startTime;
 
     /** Atributo que define em segundos o tempo para a troca da palavra secreta.*/
-    private static final long TIME_INTERVAL = 1800;
+    private static final long timeInterval = 1800;
 
     /** Interface que cria um serviço gerenciador de threads (Pool de serviços)
      *  para executar uma tarefa com base em um intervalo de tempo.*/
@@ -28,7 +28,7 @@ public class WordScheduler {
      * Qualquer método pode ser um Runable deste que retorne void e não receba parâmetros.
      * */
     public void startSecretWordMonitor(Runnable task) {
-        scheduler.scheduleAtFixedRate(task, TIME_INTERVAL, TIME_INTERVAL, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(task, timeInterval, timeInterval, TimeUnit.SECONDS);
     }
 
     /** Inicializa a classe tendo como referência um dado de tempo.*/
@@ -41,7 +41,7 @@ public class WordScheduler {
     }
 
     public long getTIME_INTERVAL() {
-        return TIME_INTERVAL;
+        return timeInterval;
     }
 
     public void shutdown() {

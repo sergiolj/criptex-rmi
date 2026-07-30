@@ -24,7 +24,7 @@ public class MainServer {
         try{
             System.out.println("Servidor RMI \n[ServerName: " + Config.SERVER_NAME + "] " +
                     "[port:" + Config.SERVER_PORT + "] online...");
-            criptexService = new CriptexSrvImplement();
+            criptexService = new CriptexSrvImplement(args);
             Registry registry = LocateRegistry.createRegistry(Config.SERVER_PORT);
             registry.rebind(Config.SERVER_NAME, criptexService);
 

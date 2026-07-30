@@ -20,6 +20,7 @@ import java.util.function.Consumer;
 public class GameManager {
     //Cria uma classe cronograma para agendar a mudança das palavras por intervalo de tempo
     private final WordScheduler scheduler;
+    private int wordIndex = 0;
 
     //Cria o dicionário de palavras
     private final Dictionary dictionary;
@@ -35,13 +36,13 @@ public class GameManager {
     public GameManager(Consumer<String> onWordChanged) {
         this.scheduler = new WordScheduler();
         this.dictionary = Dictionary.getInstance();
-        this.secretWord = new AtomicReference<>(dictionary.getWord(0)); //inicia sempre com a mesma referência.
+        this.secretWord = new AtomicReference<>(dictionary.getWord(wordIndex)); //inicia sempre com a mesma referência.
 
         this.onWordChanged = onWordChanged;
         if(onWordChanged != null) {
             onWordChanged.accept(secretWord.get());
         }
-        scheduler.startSecretWordMonitor(this::updateSecretWord); //inicia o monitor de tempo para a troca da palavra
+        //scheduler.startSecretWordMonitor(this::updateSecretWord); //inicia o monitor de tempo para a troca da palavra
     }
 
     /**
@@ -57,7 +58,7 @@ public class GameManager {
         long rodadaAtual = segundosDecorridos / scheduler.getTIME_INTERVAL();
 
         // 3. Usa o resto da divisão (%) para não estourar o tamanho da lista de palavras
-        int wordIndex = (int) (rodadaAtual % dictionary.size());
+        wordIndex = (int) (rodadaAtual % dictionary.size());
 
         String word = dictionary.getWord(wordIndex);
         this.secretWord.set(word);
@@ -66,6 +67,15 @@ public class GameManager {
           base na classe Consumer<String> inserida no construtor da GameManager e no construtor da APServerImplement com as
           instruções de como atualizar o console do servidor.
          */
+        if(onWordChanged != null){
+            this.onWordChanged.accept(word);
+        }
+    }
+
+    public void updateSecretWordDemoMode(){
+        wordIndex++;
+        String word = dictionary.getWord(wordIndex);
+        this.secretWord.set(word);
         if(onWordChanged != null){
             this.onWordChanged.accept(word);
         }
@@ -86,5 +96,9 @@ public class GameManager {
 
     public Long getTimeInterval(){
         return this.scheduler.getTIME_INTERVAL();
+    }
+
+    public WordScheduler getScheduler(){
+        return scheduler;
     }
 }
