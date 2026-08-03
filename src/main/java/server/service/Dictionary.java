@@ -27,7 +27,7 @@ public class Dictionary {
 
     /** Todas as palavras devem ter cinco letras para o estilo do jogo. */
     private Dictionary() {
-        readRawDictionary();
+        createDictionaryFromICF(16.0, "/icf");
     }
 
     /** Remove todos os acentos e cedilha de uma string, convertendo em caracteres básicos de A-Z. */
@@ -97,4 +97,45 @@ public class Dictionary {
     public boolean wordExists(String word) {
         return words.contains(word);
     }
+
+    public List<String> readMostCommonWords(Double rareness, String fileName) {
+        List<String> wordList = new ArrayList<>();
+
+        try (InputStream is = getClass().getResourceAsStream(fileName)) {
+            if (is == null) {
+                throw new IllegalArgumentException("Arquivo /icf não encontrado.");
+            }
+            BufferedReader bf = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+            String word;
+
+            double icf;
+            while ((word = bf.readLine()) != null) {
+                String[] lineSplit = word.split(",");
+                word = lineSplit[0].trim();
+                icf = Double.parseDouble(lineSplit[1].trim());
+
+                if (icf < rareness && word.length() == 5) {
+                    wordList.add(word);
+                }
+            }
+
+        } catch (IOException e) {
+            System.out.println("Erro ao acessar arquivo.");
+            throw new RuntimeException(e.getMessage());
+        }
+        System.out.println("Total de palavras adicionadas ao dicionário: " + wordList.size());
+        return wordList;
+    }
+
+    public void createDictionaryFromICF(Double rareness, String filename) {
+        List<String> readWords = readMostCommonWords(rareness, filename);
+
+        for (String w : readWords) {
+            String wordModified = removeAccentFromWord(w.toUpperCase());
+            if (wordModified.matches("^[A-Z]+$")) {
+                words.add(wordModified);
+            }
+        }
+    }
 }
+
