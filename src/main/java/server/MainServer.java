@@ -4,6 +4,7 @@ import server.remote.CriptexSrvImplement;
 import shared.config.Config;
 import shared.status.Color;
 import shared.status.DateTimeLog;
+import shared.status.FormatLog;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -22,15 +23,15 @@ public class MainServer {
     public static void main(String[] args) {
         CriptexSrvImplement criptexService = null;
         try{
-            System.out.println("Servidor RMI \n[ServerName: " + Config.SERVER_NAME + "] " +
-                    "[port:" + Config.SERVER_PORT + "] online...");
+            FormatLog.starting();
+
             criptexService = new CriptexSrvImplement(args);
             Registry registry = LocateRegistry.createRegistry(Config.SERVER_PORT);
             registry.rebind(Config.SERVER_NAME, criptexService);
 
             registerShutdownHook(criptexService);
 
-        }catch (Exception e ){
+        }catch (Exception e){
             System.out.println("[" + Color.RED + DateTimeLog.dateTimeNow() + Color.RESET +
                     "] Erro ao inicializar o Servidor RMI: " + e.getMessage());
             if(criptexService != null){
@@ -43,13 +44,12 @@ public class MainServer {
     /* Rotina de shutdown em cascata para evitar que a thread de WordScheduler continue rodando após o desligamento*/
     private static void registerShutdownHook(CriptexSrvImplement service) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println(Color.RED + "[ServerName: " + Config.SERVER_NAME + "] " + Color.RESET
-                     +  "Sinal de encerramento recebido. Iniciando desligamento seguro...");
+            FormatLog.shutdown("Sinal de encerramento recebido. Iniciando desligamento seguro...");
             if(service != null){
                 service.shutdown(); // Para a thread do WordScheduler
             }
-            System.out.println(Color.RED + "[ServerName: " + Config.SERVER_NAME + "] " + Color.RESET
-                      + "Servidor encerrado com sucesso!");
+            FormatLog.shutdown("Servidor encerrado com sucesso!");
+
         }));
     }
 }
