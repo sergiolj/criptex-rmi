@@ -42,18 +42,18 @@ public class CriptexSrvImplement extends UnicastRemoteObject implements ServerIn
         setConfigArgs(args);
         if (demoMode) {
             this.gameManager = new GameManager(newSecretWord -> {
-                System.out.println("\u001B[34m[" + DateTimeLog.dateTimeNow() + "]\u001B[0m " +
+                System.out.println(Color.BLUE + "[" + DateTimeLog.dateTimeNow() + "] " + Color.RESET +
                         "[" + Config.SERVER_NAME + "] A palavra secreta atual é: " + newSecretWord);
             });
-            System.out.println("\u001B[35m[" + DateTimeLog.dateTimeNow() + "]\u001B[0m " +
+            System.out.println(Color.PURPLE + "[" + DateTimeLog.dateTimeNow() + "] " + Color.RESET +
                     "[" + Config.SERVER_NAME + "] DEMO MODE - Próxima palavra somente em caso de palavra desvendada.");
             resetRanking();
         } else {
             this.gameManager = new GameManager(newSecretWord -> {
-                System.out.println("[\u001B[34m" + DateTimeLog.dateTimeNow() + "]\u001B[0m " +
+                System.out.println(Color.BLUE + "[" + DateTimeLog.dateTimeNow() + "] " + Color.RESET +
                         "[" + Config.SERVER_NAME + "] A palavra secreta atual é: " + newSecretWord);
             });
-            System.out.println("[\u001B[34m" + DateTimeLog.dateTimeNow() + "]\u001B[0m " +
+            System.out.println(Color.BLUE + "[" + DateTimeLog.dateTimeNow() + "] " + Color.RESET +
                     "[" + Config.SERVER_NAME + "] Próxima palavra em " +
                     gameManager.getTimeInterval() / 60 + " minutos");
             gameManager.getScheduler().startSecretWordMonitor(gameManager::updateSecretWord);
@@ -102,7 +102,7 @@ public class CriptexSrvImplement extends UnicastRemoteObject implements ServerIn
         Word validator = new Word();
 
         if(validator.validate(wordAttempt)){
-            System.out.printf("[" + Color.GREEN + DateTimeLog.dateTimeNow() + Color.RESET + "] Analysing attempt from player [UUID: %s]%n",
+            System.out.printf(Color.GREEN + "["+ DateTimeLog.dateTimeNow() + Color.RESET + "] Analysing attempt from player [UUID: %s]%n",
                     request.getUuid());
 
             /**
@@ -142,7 +142,7 @@ public class CriptexSrvImplement extends UnicastRemoteObject implements ServerIn
                     }
                 }
             }
-            System.out.println("[" + Color.GREEN + DateTimeLog.dateTimeNow() + Color.RESET + "] " +
+            System.out.println(Color.GREEN + "[" + DateTimeLog.dateTimeNow() + Color.RESET + "] " +
                     "Result from player [UUID: " + request.getUuid() + "] STATUS: " + Arrays.toString(status));
 
             boolean wordMatch;
@@ -165,7 +165,7 @@ public class CriptexSrvImplement extends UnicastRemoteObject implements ServerIn
     public void shutdown() {
         gameManager.shutdown();
         try{
-            System.out.println( "["+ Color.RED + "ServerName: " + Config.SERVER_NAME + Color.RESET + "] " +
+            System.out.println(Color.RED + "[ServerName: " + Config.SERVER_NAME  + "] " + Color.RESET +
                 "Desconectando servidor RMI...");
 
             //Remove o nome do servidor do registro RMI
