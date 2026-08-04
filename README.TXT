@@ -1,0 +1,2 @@
+mvn clean compile jlink:jlink
+jpackage --type app-image --name "CriptexServer" --dest target/instalador --module criptexrmi/server.MainServer --runtime-image target/maven-jlink/default --vendor "github.com/sergiolj" --app-version "2.0.0" --icon src/main/resources/criptex.ico --win-console

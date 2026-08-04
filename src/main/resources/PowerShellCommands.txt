@@ -1,0 +1,2 @@
+Get-Process | Where-Object { $_.ProcessName -match "criptex"}
+Stop-Process -Id number
