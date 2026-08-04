@@ -7,7 +7,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 .kotlin
-.class
+*.class
 
 ### Eclipse ###
 .apt_generated
