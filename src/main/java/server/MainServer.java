@@ -43,13 +43,13 @@ public class MainServer {
     /* Rotina de shutdown em cascata para evitar que a thread de WordScheduler continue rodando após o desligamento*/
     private static void registerShutdownHook(CriptexSrvImplement service) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("[" + Color.RED + "ServerName: " + Config.SERVER_NAME +
-                    Color.RESET + "] Sinal de encerramento recebido. Iniciando desligamento seguro...");
+            System.out.println(Color.RED + "[ServerName: " + Config.SERVER_NAME + "] " + Color.RESET
+                     +  "Sinal de encerramento recebido. Iniciando desligamento seguro...");
             if(service != null){
                 service.shutdown(); // Para a thread do WordScheduler
             }
-            System.out.println("[" + Color.RED + "ServerName: " + Config.SERVER_NAME +
-                    Color.RESET + "] Servidor encerrado com sucesso!");
+            System.out.println(Color.RED + "[ServerName: " + Config.SERVER_NAME + "] " + Color.RESET
+                      + "Servidor encerrado com sucesso!");
         }));
     }
 }

@@ -89,7 +89,7 @@ public class GameManager {
     public void shutdown() {
         if(scheduler !=null){
             scheduler.shutdown();
-            System.out.println("[" + Color.RED + "ServerName: " + Config.SERVER_NAME + "] " +
+            System.out.println(Color.RED + "[ServerName: " + Config.SERVER_NAME + "] " +
                     Color.RESET + "Encerrando controle de atualização da palavra secreta...");
         }
     }

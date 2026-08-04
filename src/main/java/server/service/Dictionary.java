@@ -48,7 +48,7 @@ public class Dictionary {
         que o recurso seja acessado corretamente, mesmo quando a aplicação for empacotada. */
         try (InputStream is = getClass().getResourceAsStream(dictionaryPath)) {
             if (is == null) {
-                System.out.println("[" + Color.RED + "FATAL ERROR" + Color.RESET +
+                System.out.println(Color.RED + "[FATAL ERROR" + Color.RESET +
                         "] Arquivo base do dicionário não foi encontrado em " + dictionaryPath);
                 return;
             }
@@ -65,7 +65,7 @@ public class Dictionary {
                 }
             }
             } catch (IOException e) {
-                System.out.println("[" + Color.RED + "FATAL ERROR" + Color.RESET +
+                System.out.println(Color.RED+ "[FATAL ERROR" + Color.RESET +
                         "] Erro ao ler dados no arquivo base do dicionário em " + dictionaryPath);
             }
     }

@@ -9,7 +9,7 @@ package shared.status;
  * @author Laís de Assis Doria da Silva
  * @author Sérgio Lopes Júnior
  *
- * @version 1.0
+ * @version 2.0
  */
 public class Color {
     /** Escrita no padrão do console. */
@@ -29,6 +29,7 @@ public class Color {
     public static final String BG_GRAY = "\u001B[47m";
     public static final String BOLD = "\u001B[1m";
     public static final String CYAN = "\u001B[36m";
+    public final static String BLUE = "\u001B[34m";
     public final static String PURPLE = "\u001B[35m";
     public final static String WHITE_BG_BLACK = "\u001B[37;40m";
     public static final String RED = "\u001B[31m";
