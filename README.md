@@ -81,6 +81,12 @@ Para o modo demonstração, acrescente `d` ao final (veja [Modo demonstração](
 Cliente de linha de comando (em outro terminal, com o servidor rodando):
 
 ```bash
+mvn exec:java
+```
+
+ou, sem passar pelo Maven:
+
+```bash
 java -p target/classes -m criptexrmi/model.MainClient
 ```
 
